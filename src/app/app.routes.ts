@@ -1,8 +1,8 @@
 import { Router } from 'express';
 import * as passport from 'passport';
 import { authenticationRoutes } from '../authentication/authentication.routes';
-import { contactRoutes } from '../contact/contact.routes';
 import { privilegeRoutes } from '../privilege/privilege.route';
+import { productRoutes } from '../product/product.route';
 import { roleRoutes } from '../role/role.route';
 import { userRoutes } from '../user/user.route';
 
@@ -22,12 +22,12 @@ class AppRouter {
             passport.authenticate('jwt', { session: false }),
             privilegeRoutes
         );
-        this.router.use(
-            '/contact',
-            // passport.authenticate('jwt', { session: false }),
-            contactRoutes
-        );
         this.router.use('/user', passport.authenticate('jwt', { session: false }), userRoutes);
+        this.router.use(
+            '/product',
+            passport.authenticate('jwt', { session: false }),
+            productRoutes
+        );
     }
 }
 
