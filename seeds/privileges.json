@@ -1,0 +1,30 @@
+[
+    {
+        "_id": {
+            "$oid": "01fe45d49926fbf44d633884"
+        },
+        "name": "[Contact] Add Contact",
+        "category": "[Category] Contact"
+    },
+    {
+        "_id": {
+            "$oid": "0a9f4f99870861161fda3230"
+        },
+        "name": "[Contact] Edit Contact",
+        "category": "[Category] Contact"
+    },
+    {
+        "_id": {
+            "$oid": "244a4c08ab728642188bb036"
+        },
+        "name": "[Contact] Delete Contact",
+        "category": "[Category] Contact"
+    },
+    {
+        "_id": {
+            "$oid": "2a9b421b8027a19603163556"
+        },
+        "name": "[Contact] View Contacts",
+        "category": "[Category] Contact"
+    }
+]

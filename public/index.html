@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title> Test Express - TypeScript API + WebSocket </title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial=1.0">
+    <script src="lib/angular.min.js"></script>
+    <script src="lib/socket.io.js"></script>
+    <script src="app.js"></script>
+
+    <style>
+        .selected {
+            background-color: blue;
+            color: white;
+        }
+
+        .msg {
+            border: 1px solid;
+            border-radius: 10px;
+            padding: 10px;
+            margin: 5px;
+        }
+
+        .mine {
+            margin-left: 0px;
+            background-color: blue;
+            color: white;
+        }
+
+        .others {
+            margin-left: 50px;
+            background-color: black;
+            color: white;
+        }
+
+        .pointer {
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body ng-app="contact-app">
+    <div ng-controller="ContactController">
+        <div ng-show="page=='login'">
+            Se connecter avec:
+            <ul>
+                <li ng-repeat="account in availableAccounts" ng-click="setAccount(account)" class="pointer"> {{ account.email }}</li>
+            </ul>
+            <form ng-submit='login(email, password)'>
+                Email:
+                <input type='text' ng-model='email' />
+                <br> Password:
+                <input type='text' ng-model='password' />
+                <br>
+                <button type='submit'> Se connecter </button>
+            </form>
+        </div>
+        <div ng-show="page=='chat'">
+            <br>Bienvenue {{ user.email }}
+            <br> Discuter avec:
+            <ul>
+                <li ng-repeat="contact in contacts" class="pointer">
+                    <span ng-class="{'selected': contact._id === selectedContact._id}" ng-click="onSelectContact(contact)"> {{ contact.email }}</span>
+                </li>
+            </ul>
+            <div ng-repeat="message in messages" ng-class="message.to == selectedContact._id ? 'mine' : 'others'" class='msg'> {{ message.body }} </div>
+            <form ng-submit='sendMessage()' ng-show="selectedContact">
+                <input ng-model="textMessage" type='text' />
+                <button type='submit'>Send message</button>
+            </form>
+        </div>
+        <br>
+    </div>
+</body>
+
+</html>
