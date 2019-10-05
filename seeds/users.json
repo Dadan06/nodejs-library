@@ -3,9 +3,9 @@
         "_id": {
             "$oid": "b99b48b59bfdd8de4de021ad"
         },
-        "firstname": "ITRAS",
-        "lastname": "ITRAS",
-        "login": "itras",
+        "firstname": "ADMIN",
+        "lastname": "ADMIN",
+        "login": "admin",
         "password": "$2b$10$p.N/FRooCUMhpFHIg6ijMevwYsqI7AfRtfdrY1qqSFqU3/EcgdXz.",
         "role": {
             "$oid": "b37046e3aaad6eafab34a058"
