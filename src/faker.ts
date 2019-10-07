@@ -16,7 +16,7 @@ const execute = (command: string) =>
     });
 
 const fakeAll = async () => {
-    await execute('ts-node ./src/contact/contact.faker.ts');
+    await execute('ts-node ./src/supplier/supplier.faker.ts');
 };
 
 fakeAll();
