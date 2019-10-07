@@ -14,7 +14,7 @@ class AuthenticationService {
                     reject(
                         new HttpException(
                             HttpStatusCode.UNAUTHORIZED,
-                            `Nom d/'utilisateur/Mot de passe incorrect`
+                            `Utilisateur ou Mot de passe incorrect`
                         )
                     );
                 }
