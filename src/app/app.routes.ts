@@ -4,6 +4,7 @@ import { authenticationRoutes } from '../authentication/authentication.routes';
 import { privilegeRoutes } from '../privilege/privilege.route';
 import { productRoutes } from '../product/product.route';
 import { roleRoutes } from '../role/role.route';
+import { supplierRoutes } from '../supplier/supplier.route';
 import { userRoutes } from '../user/user.route';
 
 class AppRouter {
@@ -27,6 +28,11 @@ class AppRouter {
             '/product',
             passport.authenticate('jwt', { session: false }),
             productRoutes
+        );
+        this.router.use(
+            '/supplier',
+            passport.authenticate('jwt', { session: false }),
+            supplierRoutes
         );
     }
 }
