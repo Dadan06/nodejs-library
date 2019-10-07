@@ -13,7 +13,7 @@
         "start": "nodemon --exec ts-node --transpile-only src/index.ts",
         "pre-seed": "ts-node ./src/working-hours-type/working-hours-type.faker.ts",
         "seed": "seed",
-        "faker": "ts-node ./src/fakers.ts",
+        "faker": "ts-node ./src/faker.ts",
         "lint": "tslint --project ./tsconfig.json src/**/*.ts",
         "cpd": "jscpd src/**/*.ts --limit 1",
         "precommit": "npm run lint && npm run cpd",
