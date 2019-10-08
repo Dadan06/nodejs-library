@@ -8,21 +8,21 @@
     },
     {
         "_id": {
-            "$oid": "0a9f4f99870861161fda3231"
+            "$oid": "01fe45d49926fbf44d633881"
         },
         "name": "CREATE_PRODUCT",
         "category": "PRODUCT"
     },
     {
         "_id": {
-            "$oid": "244a4c08ab728642188bb032"
+            "$oid": "01fe45d49926fbf44d633882"
         },
         "name": "EDIT_PRODUCT",
         "category": "PRODUCT"
     },
     {
         "_id": {
-            "$oid": "2a9b421b8027a19603163553"
+            "$oid": "01fe45d49926fbf44d633883"
         },
         "name": "DELETE_PRODUCT",
         "category": "PRODUCT"
@@ -36,77 +36,77 @@
     },
     {
         "_id": {
-            "$oid": "0a9f4f99870861161fda3235"
+            "$oid": "01fe45d49926fbf44d633885"
         },
         "name": "CREATE_SUPPLIER",
         "category": "SUPPLIER"
     },
     {
         "_id": {
-            "$oid": "244a4c08ab728642188bb036"
+            "$oid": "01fe45d49926fbf44d633886"
         },
         "name": "EDIT_SUPPLIER",
         "category": "SUPPLIER"
     },
     {
         "_id": {
-            "$oid": "2a9b421b8027a19603163557"
+            "$oid": "01fe45d49926fbf44d633887"
         },
         "name": "DELETE_SUPPLIER",
         "category": "SUPPLIER"
     },
     {
         "_id": {
-            "$oid": "01fe45d49926fbf44d633887"
+            "$oid": "01fe45d49926fbf44d633888"
         },
         "name": "VIEW_USER",
         "category": "USER"
     },
     {
         "_id": {
-            "$oid": "0a9f4f99870861161fda3238"
+            "$oid": "01fe45d49926fbf44d633889"
         },
         "name": "CREATE_USER",
         "category": "USER"
     },
     {
         "_id": {
-            "$oid": "244a4c08ab728642188bb039"
+            "$oid": "01fe45d49926fbf44d63388a"
         },
         "name": "EDIT_USER",
         "category": "USER"
     },
     {
         "_id": {
-            "$oid": "2a9b421b8027a1960316355a"
+            "$oid": "01fe45d49926fbf44d63388b"
         },
         "name": "DELETE_USER",
         "category": "USER"
     },
     {
         "_id": {
-            "$oid": "01fe45d49926fbf44d63388b"
+            "$oid": "01fe45d49926fbf44d63388c"
         },
         "name": "VIEW_ROLE",
         "category": "ROLE"
     },
     {
         "_id": {
-            "$oid": "0a9f4f99870861161fda323c"
+            "$oid": "01fe45d49926fbf44d63388d"
         },
         "name": "CREATE_ROLE",
         "category": "ROLE"
     },
     {
         "_id": {
-            "$oid": "244a4c08ab728642188bb03d"
+            "$oid": "01fe45d49926fbf44d63388e"
         },
         "name": "EDIT_ROLE",
         "category": "ROLE"
     },
     {
         "_id": {
-            "$oid": "2a9b421b8027a1960316355e"
+            "$oid": "01fe45d49926fbf44d63388f"
         },
         "name": "DELETE ROLE",
         "category": "ROLE"
