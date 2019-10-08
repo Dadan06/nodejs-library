@@ -9,7 +9,6 @@ export interface User extends mongoose.Document {
     lastname: string;
     login: string;
     password: string;
-    socketId: string;
     role: Role | ObjectId;
     roleName: string;
     validPassword: (p: string) => Promise<boolean>;
