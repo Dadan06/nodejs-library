@@ -3,19 +3,53 @@
         "_id": {
             "$oid": "b37046e3aaad6eafab34a058"
         },
-        "name": "SUPER_ADMIN",
+        "name": "Super administrateur",
+        "roleType": "ROOT",
         "privileges": [
+            {
+                "$oid": "01fe45d49926fbf44d633880"
+            },
+            {
+                "$oid": "01fe45d49926fbf44d633881"
+            },
+            {
+                "$oid": "01fe45d49926fbf44d633882"
+            },
+            {
+                "$oid": "01fe45d49926fbf44d633883"
+            },
             {
                 "$oid": "01fe45d49926fbf44d633884"
             },
             {
-                "$oid": "0a9f4f99870861161fda3230"
+                "$oid": "01fe45d49926fbf44d633885"
             },
             {
-                "$oid": "244a4c08ab728642188bb036"
+                "$oid": "01fe45d49926fbf44d633886"
             },
             {
-                "$oid": "2a9b421b8027a19603163556"
+                "$oid": "01fe45d49926fbf44d633887"
+            },
+            {
+                "$oid": "01fe45d49926fbf44d633888"
+            },
+            {
+                "$oid": "01fe45d49926fbf44d633889"
+            },
+            {
+                "$oid": "01fe45d49926fbf44d63388a"
+            },
+            {
+                "$oid": "01fe45d49926fbf44d63388b"
+            },
+            {
+                "$oid": "01fe45d49926fbf44d63388c"
+            },
+            {
+                "$oid": "01fe45d49926fbf44d63388d"
+            },
+            {
+                "$oid": "01fe45d49926fbf44d63388e"
             }
         ]
     }

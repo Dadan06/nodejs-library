@@ -3,105 +3,105 @@
         "_id": {
             "$oid": "01fe45d49926fbf44d633880"
         },
-        "name": "VIEW PRODUCT",
+        "name": "VIEW_PRODUCT",
         "category": "PRODUCT"
     },
     {
         "_id": {
             "$oid": "0a9f4f99870861161fda3231"
         },
-        "name": "CREATE PRODUCT",
+        "name": "CREATE_PRODUCT",
         "category": "PRODUCT"
     },
     {
         "_id": {
             "$oid": "244a4c08ab728642188bb032"
         },
-        "name": "EDIT PRODUCT",
+        "name": "EDIT_PRODUCT",
         "category": "PRODUCT"
     },
     {
         "_id": {
             "$oid": "2a9b421b8027a19603163553"
         },
-        "name": "DELETE PRODUCT",
+        "name": "DELETE_PRODUCT",
         "category": "PRODUCT"
     },
     {
         "_id": {
             "$oid": "01fe45d49926fbf44d633884"
         },
-        "name": "VIEW SUPPLIER",
+        "name": "VIEW_SUPPLIER",
         "category": "SUPPLIER"
     },
     {
         "_id": {
             "$oid": "0a9f4f99870861161fda3235"
         },
-        "name": "CREATE SUPPLIER",
+        "name": "CREATE_SUPPLIER",
         "category": "SUPPLIER"
     },
     {
         "_id": {
             "$oid": "244a4c08ab728642188bb036"
         },
-        "name": "EDIT SUPPLIER",
+        "name": "EDIT_SUPPLIER",
         "category": "SUPPLIER"
     },
     {
         "_id": {
             "$oid": "2a9b421b8027a19603163557"
         },
-        "name": "DELETE SUPPLIER",
+        "name": "DELETE_SUPPLIER",
         "category": "SUPPLIER"
     },
     {
         "_id": {
             "$oid": "01fe45d49926fbf44d633887"
         },
-        "name": "VIEW USER",
+        "name": "VIEW_USER",
         "category": "USER"
     },
     {
         "_id": {
             "$oid": "0a9f4f99870861161fda3238"
         },
-        "name": "CREATE USER",
+        "name": "CREATE_USER",
         "category": "USER"
     },
     {
         "_id": {
             "$oid": "244a4c08ab728642188bb039"
         },
-        "name": "EDIT USER",
+        "name": "EDIT_USER",
         "category": "USER"
     },
     {
         "_id": {
             "$oid": "2a9b421b8027a1960316355a"
         },
-        "name": "DELETE USER",
+        "name": "DELETE_USER",
         "category": "USER"
     },
     {
         "_id": {
             "$oid": "01fe45d49926fbf44d63388b"
         },
-        "name": "VIEW ROLE",
+        "name": "VIEW_ROLE",
         "category": "ROLE"
     },
     {
         "_id": {
             "$oid": "0a9f4f99870861161fda323c"
         },
-        "name": "CREATE ROLE",
+        "name": "CREATE_ROLE",
         "category": "ROLE"
     },
     {
         "_id": {
             "$oid": "244a4c08ab728642188bb03d"
         },
-        "name": "EDIT ROLE",
+        "name": "EDIT_ROLE",
         "category": "ROLE"
     },
     {
