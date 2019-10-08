@@ -5,8 +5,8 @@ export interface SupplierDocument extends Supplier, mongoose.Document {}
 
 const schema = new mongoose.Schema({
     name: { type: String, required: true },
-    address: { type: Number, required: true },
-    contact: { type: Number, required: true }
+    address: { type: String, required: true },
+    contact: { type: String, required: true }
 });
 
 export const supplierSchema = mongoose.model<SupplierDocument>('Supplier', schema);
