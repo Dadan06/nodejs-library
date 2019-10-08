@@ -6,7 +6,7 @@
         "firstname": "ADMIN",
         "lastname": "ADMIN",
         "login": "admin",
-        "password": "$2b$10$p.N/FRooCUMhpFHIg6ijMevwYsqI7AfRtfdrY1qqSFqU3/EcgdXz.",
+        "password": "$2y$10$eON8n.AVS.BJe7z83NvGXOW.JSUiwi3QG0yLHHv.EgidKo1pxq2Fu",
         "role": {
             "$oid": "b37046e3aaad6eafab34a058"
         }
