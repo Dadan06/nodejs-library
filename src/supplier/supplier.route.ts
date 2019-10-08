@@ -14,6 +14,7 @@ class SupplierRouter {
             .route('/')
             .get(supplierController.getPaginatedList.bind(supplierController))
             .post(supplierController.create.bind(supplierController));
+        this.router.route('/all').get(supplierController.getAll.bind(supplierController));
         this.router
             .route('/:supplierId')
             .get(supplierController.getById.bind(supplierController))

@@ -4,7 +4,7 @@ import { ControllerWrite } from '../common/controller/controller-write.interface
 import { Page } from '../shared/types/page.interface';
 import { wrapToSendBackResponse } from '../shared/wrap-to-send-back-response';
 import { Supplier } from './supplier.model';
-import { supplierService, PaginatedSupplier } from './supplier.service';
+import { PaginatedSupplier, supplierService } from './supplier.service';
 
 class SupplierController implements ControllerRead, ControllerWrite {
     getPaginatedList(req: Request, res: Response, next: NextFunction): void {
@@ -18,6 +18,10 @@ class SupplierController implements ControllerRead, ControllerWrite {
             res,
             next
         );
+    }
+
+    getAll(req: Request, res: Response, next: NextFunction): void {
+        wrapToSendBackResponse<Supplier[]>(supplierService.getAll(), res, next);
     }
 
     getById(req: Request, res: Response, next: NextFunction): void {

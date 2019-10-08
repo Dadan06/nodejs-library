@@ -15,8 +15,14 @@ class SupplierService implements ServiceRead<Supplier>, ServiceWrite<Supplier> {
         order: Sort<Supplier> = {}
     ): Promise<PaginatedSupplier> {
         const totalItems: number = await supplierRepository.count(criteria);
-        const items: Supplier[] = await supplierRepository.getPaginated(criteria, page, order).exec();
+        const items: Supplier[] = await supplierRepository
+            .getPaginated(criteria, page, order)
+            .exec();
         return { items, totalItems };
+    }
+
+    async getAll(): Promise<Supplier[]> {
+        return supplierRepository.find({}).exec();
     }
 
     async getById(id: string): Promise<Supplier | null> {
