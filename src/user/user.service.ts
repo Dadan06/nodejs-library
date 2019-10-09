@@ -1,8 +1,7 @@
 import * as bcrypt from 'bcrypt';
 import { ServiceRead } from '../common/service/service-read.interface';
 import { ServiceWrite } from '../common/service/service-write.interface';
-import { Role, RoleType } from '../role/role.model';
-import { roleRepository } from '../role/role.repository';
+import { RoleType } from '../role/role.model';
 import { HttpStatusCode } from '../shared/constants/http-status-codes.constant';
 import { HttpException } from '../shared/types/http-exception.interface';
 import { Page, Paginated } from '../shared/types/page.interface';
@@ -28,7 +27,6 @@ class UserService implements ServiceRead<User>, ServiceWrite<User> {
         page: Page,
         order: Sort<User> = {}
     ): Promise<PaginatedUser> {
-        const role: Role | null = await roleRepository.findOne({ roleType: RoleType.ROOT }).exec();
         const users: User[] = await getFilteredDocument(
             criteria,
             FILTER_FIELDS_MAP,
@@ -36,8 +34,8 @@ class UserService implements ServiceRead<User>, ServiceWrite<User> {
             userRepository
         )
             .populate('role')
-            .where('role._id')
-            .ne(role && role._id)
+            .where('role.roleType')
+            .ne(RoleType.ROOT)
             .exec();
         return {
             items: paginate(users, page),
