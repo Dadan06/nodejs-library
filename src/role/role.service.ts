@@ -18,13 +18,6 @@ const SEARCH_FIELDS: Array<string> = ['name'];
 const DUPLICATE_ROLE_ERROR = 'Ce rôle existe déjà';
 
 class RoleService implements ServiceRead<Role>, ServiceWrite<Role> {
-    async getList(criteria: Partial<Role>): Promise<Partial<Role> | Role[]> {
-        return roleRepository
-            .find(criteria)
-            .populate('privileges')
-            .exec();
-    }
-
     async getPaginatedList(
         // tslint:disable-next-line:no-any
         criteria: any,
