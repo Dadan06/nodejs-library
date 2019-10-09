@@ -5,7 +5,7 @@ import { HttpException } from '../shared/types/http-exception.interface';
 import { Page, Paginated } from '../shared/types/page.interface';
 import { Sort } from '../shared/types/sort.type';
 import { getFilteredDocument } from '../shared/utils/filter-paginate.utils';
-import { Role } from './role.model';
+import { Role, RoleType } from './role.model';
 import { roleRepository } from './role.repository';
 
 export interface PaginatedRole extends Paginated<Role> {}
@@ -38,7 +38,8 @@ class RoleService implements ServiceRead<Role>, ServiceWrite<Role> {
             SEARCH_FIELDS,
             roleRepository
         )
-            .populate('privileges')
+            .where('roleType')
+            .ne(RoleType.ROOT)
             .exec();
         return { items, totalItems };
     }
@@ -46,17 +47,13 @@ class RoleService implements ServiceRead<Role>, ServiceWrite<Role> {
     async getAll(): Promise<Role[]> {
         return roleRepository
             .find({})
-            .where('name')
-            .ne('Super administrateur')
-            .populate('privileges')
+            .where('roleType')
+            .ne(RoleType.ROOT)
             .exec();
     }
 
     async getById(id: string): Promise<Role | null> {
-        return roleRepository
-            .findById(id)
-            .populate('privileges')
-            .exec();
+        return roleRepository.findById(id).exec();
     }
 
     async create(item: Role): Promise<Role> {
