@@ -7,8 +7,12 @@ const schema = new mongoose.Schema({
     name: { type: String, required: true },
     costPrice: { type: Number, required: true },
     sellingPrice: { type: Number, required: true },
-    quantity: {type: Number, required: true},
+    quantity: { type: Number, required: true },
     supplier: { type: mongoose.Schema.Types.ObjectId, ref: 'Supplier' }
+});
+
+schema.pre('find', function() {
+    this.populate('supplier');
 });
 
 export const productSchema = mongoose.model<ProductDocument>('Product', schema);
