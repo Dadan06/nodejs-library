@@ -26,25 +26,18 @@ class ProductService implements ServiceRead<Product>, ServiceWrite<Product> {
             FILTER_FIELDS_MAP,
             SEARCH_FIELDS,
             productRepository
-        )
-            .populate('privileges')
-            .exec();
+        ).exec();
         return { items, totalItems };
     }
 
     async getAll(): Promise<Product[]> {
-        return productRepository
-            .find({})
-            .where('name')
-            .ne('Super administrateur')
-            .populate('privileges')
-            .exec();
+        return productRepository.find({}).exec();
     }
 
     async getById(id: string): Promise<Product | null> {
         return productRepository
             .findById(id)
-            .populate('privileges')
+            .populate('supplier')
             .exec();
     }
 
