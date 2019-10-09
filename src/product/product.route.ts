@@ -15,7 +15,7 @@ class ProductRouter {
             .get(productController.getPaginatedList.bind(productController))
             .post(productController.create.bind(productController));
         this.router
-            .route('/:roleId')
+            .route('/:productId')
             .get(productController.getById.bind(productController))
             .put(productController.update.bind(productController))
             .delete(productController.delete.bind(productController));

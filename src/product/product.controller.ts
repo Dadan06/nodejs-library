@@ -22,7 +22,7 @@ class ProductController implements ControllerRead, ControllerWrite {
 
     getById(req: Request, res: Response, next: NextFunction): void {
         wrapToSendBackResponse<Product | null>(
-            productService.getById(req.params.ProductId),
+            productService.getById(req.params.productId),
             res,
             next
         );
@@ -33,12 +33,12 @@ class ProductController implements ControllerRead, ControllerWrite {
     }
 
     delete(req: Request, res: Response, next: NextFunction): void {
-        wrapToSendBackResponse<boolean>(productService.delete(req.params.ProductId), res, next);
+        wrapToSendBackResponse<boolean>(productService.delete(req.params.productId), res, next);
     }
 
     update(req: Request, res: Response, next: NextFunction): void {
         wrapToSendBackResponse<Product | null>(
-            productService.update(req.params.ProductId, req.body),
+            productService.update(req.params.productId, req.body),
             res,
             next
         );
