@@ -2,7 +2,7 @@ import * as faker from 'faker';
 import { mongoDbObjectId, writeToJson } from '../shared/utils/faker.utils';
 import { Supplier } from './supplier.model';
 
-const NB_SUPPLIER = 30;
+const NB_SUPPLIER = 10;
 
 const suppliers: Supplier[] = Array.from(
     new Array(NB_SUPPLIER),
