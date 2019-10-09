@@ -1,11 +1,16 @@
 import { ServiceRead } from '../common/service/service-read.interface';
 import { ServiceWrite } from '../common/service/service-write.interface';
+import { FilterFieldMap } from '../product/product.service';
 import { Page, Paginated } from '../shared/types/page.interface';
 import { Sort } from '../shared/types/sort.type';
+import { getFilteredDocument } from '../shared/utils/filter-paginate.utils';
 import { Supplier } from './supplier.model';
 import { supplierRepository } from './supplier.repository';
 
 export interface PaginatedSupplier extends Paginated<Supplier> {}
+
+const FILTER_FIELDS_MAP: FilterFieldMap = {};
+const SEARCH_FIELDS: Array<string> = ['name', 'address', 'contact'];
 
 class SupplierService implements ServiceRead<Supplier>, ServiceWrite<Supplier> {
     async getPaginatedList(
@@ -15,9 +20,12 @@ class SupplierService implements ServiceRead<Supplier>, ServiceWrite<Supplier> {
         order: Sort<Supplier> = {}
     ): Promise<PaginatedSupplier> {
         const totalItems: number = await supplierRepository.count(criteria);
-        const items: Supplier[] = await supplierRepository
-            .getPaginated(criteria, page, order)
-            .exec();
+        const items: Supplier[] = await getFilteredDocument(
+            criteria,
+            FILTER_FIELDS_MAP,
+            SEARCH_FIELDS,
+            supplierRepository
+        ).exec();
         return { items, totalItems };
     }
 
