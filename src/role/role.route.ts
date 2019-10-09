@@ -14,6 +14,7 @@ class RoleRouter {
             .route('/')
             .get(roleController.getPaginatedList.bind(roleController))
             .post(roleController.create.bind(roleController));
+        this.router.route('/all').get(roleController.getAll.bind(roleController));
         this.router
             .route('/:roleId')
             .get(roleController.getById.bind(roleController))

@@ -4,7 +4,7 @@ import { ControllerWrite } from '../common/controller/controller-write.interface
 import { Page } from '../shared/types/page.interface';
 import { wrapToSendBackResponse } from '../shared/wrap-to-send-back-response';
 import { Role } from './role.model';
-import { roleService, PaginatedRole } from './role.service';
+import { PaginatedRole, roleService } from './role.service';
 
 class RoleController implements ControllerRead, ControllerWrite {
     getPaginatedList(req: Request, res: Response, next: NextFunction): void {
@@ -20,12 +20,12 @@ class RoleController implements ControllerRead, ControllerWrite {
         );
     }
 
+    getAll(req: Request, res: Response, next: NextFunction): void {
+        wrapToSendBackResponse<Role[]>(roleService.getAll(), res, next);
+    }
+
     getById(req: Request, res: Response, next: NextFunction): void {
-        wrapToSendBackResponse<Role | null>(
-            roleService.getById(req.params.roleId),
-            res,
-            next
-        );
+        wrapToSendBackResponse<Role | null>(roleService.getById(req.params.roleId), res, next);
     }
 
     create(req: Request, res: Response, next: NextFunction): void {
