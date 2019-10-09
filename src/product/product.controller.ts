@@ -43,6 +43,10 @@ class ProductController implements ControllerRead, ControllerWrite {
             next
         );
     }
+
+    checkDuplicate(req: Request, res: Response, next: NextFunction): void {
+        wrapToSendBackResponse<boolean>(productService.checkDuplicate(req.body), res, next);
+    }
 }
 
 export const productController = new ProductController();

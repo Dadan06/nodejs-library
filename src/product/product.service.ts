@@ -2,7 +2,7 @@ import { ServiceRead } from '../common/service/service-read.interface';
 import { ServiceWrite } from '../common/service/service-write.interface';
 import { Page, Paginated } from '../shared/types/page.interface';
 import { Sort } from '../shared/types/sort.type';
-import { getFilteredDocument } from '../shared/utils/filter-paginate.utils';
+import { checkDuplicate, getFilteredDocument } from '../shared/utils/filter-paginate.utils';
 import { Product } from './product.model';
 import { productRepository } from './product.repository';
 
@@ -58,6 +58,10 @@ class ProductService implements ServiceRead<Product>, ServiceWrite<Product> {
 
     async update(id: string, item: Product): Promise<Product | null> {
         return productRepository.update(id, item);
+    }
+
+    async checkDuplicate(product: Product): Promise<boolean> {
+        return checkDuplicate(productRepository, 'name', product);
     }
 }
 

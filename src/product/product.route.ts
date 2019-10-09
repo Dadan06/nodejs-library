@@ -19,6 +19,9 @@ class ProductRouter {
             .get(productController.getById.bind(productController))
             .put(productController.update.bind(productController))
             .delete(productController.delete.bind(productController));
+        this.router
+            .route('/check-duplicate')
+            .post(productController.checkDuplicate.bind(productController));
     }
 }
 
