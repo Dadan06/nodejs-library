@@ -14,13 +14,6 @@ const FILTER_FIELDS_MAP: FilterFieldMap = {};
 const SEARCH_FIELDS: Array<string> = ['name'];
 
 class ProductService implements ServiceRead<Product>, ServiceWrite<Product> {
-    async getList(criteria: Partial<Product>): Promise<Partial<Product> | Product[]> {
-        return productRepository
-            .find(criteria)
-            .populate('privileges')
-            .exec();
-    }
-
     async getPaginatedList(
         // tslint:disable-next-line:no-any
         criteria: any,
