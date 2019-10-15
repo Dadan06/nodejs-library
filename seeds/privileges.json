@@ -115,7 +115,7 @@
         "_id": {
             "$oid": "01fe45d49926fbf44d633890"
         },
-        "name": "CREATE_TRADE",
-        "category": "TRADE"
+        "name": "CREATE_SALE",
+        "category": "SALE"
     }
 ]
