@@ -108,7 +108,14 @@
         "_id": {
             "$oid": "01fe45d49926fbf44d63388f"
         },
-        "name": "DELETE ROLE",
+        "name": "DELETE_ROLE",
         "category": "ROLE"
+    },
+    {
+        "_id": {
+            "$oid": "01fe45d49926fbf44d633890"
+        },
+        "name": "CREATE_TRADE",
+        "category": "TRADE"
     }
 ]
