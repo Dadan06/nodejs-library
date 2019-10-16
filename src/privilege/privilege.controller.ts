@@ -4,7 +4,7 @@ import { ControllerWrite } from '../common/controller/controller-write.interface
 import { Page } from '../shared/types/page.interface';
 import { wrapToSendBackResponse } from '../shared/wrap-to-send-back-response';
 import { Privilege } from './privilege.model';
-import { privilegeService, PaginatedPrivilege } from './privilege.service';
+import { PaginatedPrivilege, privilegeService } from './privilege.service';
 
 class PrivilegeController implements ControllerRead, ControllerWrite {
     getPaginatedList(req: Request, res: Response, next: NextFunction): void {
@@ -18,6 +18,10 @@ class PrivilegeController implements ControllerRead, ControllerWrite {
             res,
             next
         );
+    }
+
+    getAll(rea: Request, res: Response, next: NextFunction): void {
+        wrapToSendBackResponse<Privilege[]>(privilegeService.getAll(), res, next);
     }
 
     getById(req: Request, res: Response, next: NextFunction): void {

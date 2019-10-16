@@ -14,6 +14,7 @@ class PrivilegeRouter {
             .route('/')
             .get(privilegeController.getPaginatedList.bind(privilegeController))
             .post(privilegeController.create.bind(privilegeController));
+        this.router.route('/all').get(privilegeController.getAll.bind(privilegeController));
         this.router
             .route('/:privilegeId')
             .get(privilegeController.getById.bind(privilegeController))

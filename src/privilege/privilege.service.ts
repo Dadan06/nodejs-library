@@ -15,8 +15,14 @@ class PrivilegeService implements ServiceRead<Privilege>, ServiceWrite<Privilege
         order: Sort<Privilege> = {}
     ): Promise<PaginatedPrivilege> {
         const totalItems: number = await privilegeRepository.count(criteria);
-        const items: Privilege[] = await privilegeRepository.getPaginated(criteria, page, order).exec();
+        const items: Privilege[] = await privilegeRepository
+            .getPaginated(criteria, page, order)
+            .exec();
         return { items, totalItems };
+    }
+
+    async getAll(): Promise<Privilege[]> {
+        return privilegeRepository.find({}).exec();
     }
 
     async getById(id: string): Promise<Privilege | null> {
