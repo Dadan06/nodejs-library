@@ -1,10 +1,8 @@
 import { ServiceRead } from '../common/service/service-read.interface';
 import { ServiceWrite } from '../common/service/service-write.interface';
-import { HttpStatusCode } from '../shared/constants/http-status-codes.constant';
-import { HttpException } from '../shared/types/http-exception.interface';
 import { Page, Paginated } from '../shared/types/page.interface';
 import { Sort } from '../shared/types/sort.type';
-import { getFilteredDocument } from '../shared/utils/filter-paginate.utils';
+import { checkDuplicate, getFilteredDocument } from '../shared/utils/filter-paginate.utils';
 import { Role, RoleType } from './role.model';
 import { roleRepository } from './role.repository';
 
@@ -14,8 +12,6 @@ export type FilterFieldMap = Record<string, keyof Role>;
 
 const FILTER_FIELDS_MAP: FilterFieldMap = {};
 const SEARCH_FIELDS: Array<string> = ['name'];
-
-const DUPLICATE_ROLE_ERROR = 'Ce rôle existe déjà';
 
 class RoleService implements ServiceRead<Role>, ServiceWrite<Role> {
     async getPaginatedList(
@@ -50,10 +46,6 @@ class RoleService implements ServiceRead<Role>, ServiceWrite<Role> {
     }
 
     async create(item: Role): Promise<Role> {
-        const existingRole = await roleRepository.findOne({ name: item.name }).exec();
-        if (existingRole) {
-            throw new HttpException(HttpStatusCode.BAD_REQUEST, DUPLICATE_ROLE_ERROR);
-        }
         return roleRepository.create(item);
     }
 
@@ -62,11 +54,11 @@ class RoleService implements ServiceRead<Role>, ServiceWrite<Role> {
     }
 
     async update(id: string, item: Role): Promise<Role | null> {
-        const existingRole = await roleRepository.findOne({ name: item.name }).exec();
-        if (existingRole && String(existingRole._id) !== String(item._id)) {
-            throw new HttpException(HttpStatusCode.BAD_REQUEST, DUPLICATE_ROLE_ERROR);
-        }
         return roleRepository.update(id, item);
+    }
+
+    async checkDuplicate(role: Role): Promise<boolean> {
+        return checkDuplicate(roleRepository, 'name', role);
     }
 }
 

@@ -43,6 +43,10 @@ class RoleController implements ControllerRead, ControllerWrite {
             next
         );
     }
+
+    checkDuplicate(req: Request, res: Response, next: NextFunction): void {
+        wrapToSendBackResponse<boolean>(roleService.checkDuplicate(req.body), res, next);
+    }
 }
 
 export const roleController = new RoleController();

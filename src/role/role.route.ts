@@ -20,6 +20,9 @@ class RoleRouter {
             .get(roleController.getById.bind(roleController))
             .put(roleController.update.bind(roleController))
             .delete(roleController.delete.bind(roleController));
+        this.router
+            .route('/check-duplicate')
+            .post(roleController.checkDuplicate.bind(roleController));
     }
 }
 
