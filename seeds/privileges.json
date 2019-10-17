@@ -117,5 +117,12 @@
         },
         "name": "CREATE_SALE",
         "category": "SALE"
+    },
+    {
+        "_id": {
+            "$oid": "01fe45d49926fbf44d633891"
+        },
+        "name": "SALE_MONITORING",
+        "category": "SALE"
     }
 ]
