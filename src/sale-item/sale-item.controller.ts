@@ -2,49 +2,55 @@ import { NextFunction, Request, Response } from 'express';
 import { ControllerRead } from '../common/controller/controller-read.interface';
 import { ControllerWrite } from '../common/controller/controller-write.interface';
 import { Page } from '../shared/types/page.interface';
-import { Sort } from '../shared/types/sort.type';
 import { wrapToSendBackResponse } from '../shared/wrap-to-send-back-response';
-import { Contact } from './contact.model';
-import { contactService, PaginatedContact } from './contact.service';
+import { SaleItem } from './sale-item.model';
+import { PaginatedSaleItem, saleItemService } from './sale-item.service';
 
-class ContactController implements ControllerRead, ControllerWrite {
+class SaleItemController implements ControllerRead, ControllerWrite {
     getPaginatedList(req: Request, res: Response, next: NextFunction): void {
         const { page: pageNo, pageSize, ...criteria } = req.query;
         const page: Page = {
             page: Number(pageNo),
             pageSize: Number(pageSize)
         };
-        const order: Sort<Contact> = { firstname: 'asc' };
-        wrapToSendBackResponse<PaginatedContact>(
-            contactService.getPaginatedList(criteria, page, order),
+        wrapToSendBackResponse<PaginatedSaleItem>(
+            saleItemService.getPaginatedList(criteria, page),
             res,
             next
         );
     }
 
     getById(req: Request, res: Response, next: NextFunction): void {
-        wrapToSendBackResponse<Contact | null>(
-            contactService.getById(req.params.contactId),
+        wrapToSendBackResponse<SaleItem | null>(
+            saleItemService.getById(req.params.saleItemId),
             res,
             next
         );
     }
 
     create(req: Request, res: Response, next: NextFunction): void {
-        wrapToSendBackResponse<Contact>(contactService.create(req.body), res, next);
+        wrapToSendBackResponse<SaleItem>(saleItemService.create(req.body), res, next);
     }
 
     delete(req: Request, res: Response, next: NextFunction): void {
-        wrapToSendBackResponse<boolean>(contactService.delete(req.params.contactId), res, next);
+        wrapToSendBackResponse<boolean>(saleItemService.delete(req.params.saleItemId), res, next);
     }
 
     update(req: Request, res: Response, next: NextFunction): void {
-        wrapToSendBackResponse<Contact | null>(
-            contactService.update(req.params.contactId, req.body),
+        wrapToSendBackResponse<SaleItem | null>(
+            saleItemService.update(req.params.saleItemId, req.body),
+            res,
+            next
+        );
+    }
+
+    deleteItem(req: Request, res: Response, next: NextFunction): void {
+        wrapToSendBackResponse<SaleItem | null>(
+            saleItemService.deleteItem(req.params.saleItemId, req.body),
             res,
             next
         );
     }
 }
 
-export const contactController = new ContactController();
+export const saleItemController = new SaleItemController();

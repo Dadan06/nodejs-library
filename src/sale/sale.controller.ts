@@ -1,12 +1,12 @@
 import { NextFunction, Request, Response } from 'express';
 import { ControllerRead } from '../common/controller/controller-read.interface';
-import { ControllerWrite } from '../common/controller/controller-write.interface';
+import { SaleItem } from '../sale-item/sale-item.model';
 import { Page } from '../shared/types/page.interface';
 import { wrapToSendBackResponse } from '../shared/wrap-to-send-back-response';
 import { Sale } from './sale.model';
-import { saleService, PaginatedSale } from './sale.service';
+import { PaginatedSale, saleService } from './sale.service';
 
-class SaleController implements ControllerRead, ControllerWrite {
+class SaleController implements ControllerRead {
     getPaginatedList(req: Request, res: Response, next: NextFunction): void {
         const { page: pageNo, pageSize, ...criteria } = req.query;
         const page: Page = {
@@ -21,15 +21,7 @@ class SaleController implements ControllerRead, ControllerWrite {
     }
 
     getById(req: Request, res: Response, next: NextFunction): void {
-        wrapToSendBackResponse<Sale | null>(
-            saleService.getById(req.params.saleId),
-            res,
-            next
-        );
-    }
-
-    create(req: Request, res: Response, next: NextFunction): void {
-        wrapToSendBackResponse<Sale>(saleService.create(req.body), res, next);
+        wrapToSendBackResponse<Sale | null>(saleService.getById(req.params.saleId), res, next);
     }
 
     delete(req: Request, res: Response, next: NextFunction): void {
@@ -39,6 +31,18 @@ class SaleController implements ControllerRead, ControllerWrite {
     update(req: Request, res: Response, next: NextFunction): void {
         wrapToSendBackResponse<Sale | null>(
             saleService.update(req.params.saleId, req.body),
+            res,
+            next
+        );
+    }
+
+    create(req: Request, res: Response, next: NextFunction): void {
+        wrapToSendBackResponse<Sale>(saleService.create(req.body), res, next);
+    }
+
+    addProduct(req: Request, res: Response, next: NextFunction): void {
+        wrapToSendBackResponse<SaleItem>(
+            saleService.addProduct(req.params.saleId, req.body),
             res,
             next
         );

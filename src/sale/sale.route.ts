@@ -15,6 +15,9 @@ class SaleRouter {
             .get(saleController.getPaginatedList.bind(saleController))
             .post(saleController.create.bind(saleController));
         this.router
+            .route('/:saleId/add-product')
+            .post(saleController.addProduct.bind(saleController));
+        this.router
             .route('/:saleId')
             .get(saleController.getById.bind(saleController))
             .put(saleController.update.bind(saleController))
