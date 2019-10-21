@@ -47,6 +47,10 @@ class SaleController implements ControllerRead {
             next
         );
     }
+
+    cancelSale(req: Request, res: Response, next: NextFunction): void {
+        wrapToSendBackResponse<Sale | null>(saleService.cancelSale(req.params.orderId), res, next);
+    }
 }
 
 export const saleController = new SaleController();

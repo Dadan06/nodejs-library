@@ -1,6 +1,8 @@
 import { ServiceRead } from '../common/service/service-read.interface';
+import { ProductNotFoundException } from '../product/product-not-found.exception';
 import { Product } from '../product/product.model';
 import { productRepository } from '../product/product.repository';
+import { SaleItemNotFoundException } from '../sale-item/sale-item-not-found.exception';
 import { SaleItem, SaleItemStatus } from '../sale-item/sale-item.model';
 import { saleItemRepository } from '../sale-item/sale-item.repository';
 import { HttpStatusCode } from '../shared/constants/http-status-codes.constant';
@@ -79,6 +81,33 @@ class SaleService implements ServiceRead<Sale> {
         sale.saleItems.push(saleItem._id);
         await saleRepository.update(sale._id, sale);
         return saleItem;
+    }
+
+    async cancelSale(saleId: string): Promise<Sale | null> {
+        const sale: Sale | null = await saleRepository.update(saleId, {
+            saleStatus: SaleStatus.CANCELED
+        });
+        if (!sale) {
+            throw new SaleNotFoundException(saleId);
+        }
+        await saleItemRepository.cancelForSale(saleId);
+        for (const id of sale.saleItems) {
+            const saleItem: SaleItem | null = await saleItemRepository
+                .findById((id as unknown) as string)
+                .exec();
+            if (!saleItem) {
+                throw new SaleItemNotFoundException((id as unknown) as string);
+            }
+            const dbProduct: Product | null = await productRepository
+                .findById((saleItem.product as Product)._id)
+                .exec();
+            if (!dbProduct) {
+                throw new ProductNotFoundException((saleItem.product as Product)._id);
+            }
+            dbProduct.quantity += saleItem.quantity;
+            await productRepository.update(dbProduct._id, dbProduct);
+        }
+        return sale;
     }
 
     private ensureStockIsEnough(product: Product | null, quantity: number) {

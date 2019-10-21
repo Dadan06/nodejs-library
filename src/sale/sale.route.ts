@@ -22,6 +22,7 @@ class SaleRouter {
             .get(saleController.getById.bind(saleController))
             .put(saleController.update.bind(saleController))
             .delete(saleController.delete.bind(saleController));
+        this.router.route('/:saleId/cancel').post(saleController.cancelSale.bind(saleController));
     }
 }
 

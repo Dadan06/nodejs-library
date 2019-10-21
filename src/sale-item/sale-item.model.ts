@@ -2,7 +2,8 @@ import { Product } from '../product/product.model';
 
 export enum SaleItemStatus {
     ORDERED = 'ORDERED',
-    DELETED = 'DELETED'
+    DELETED = 'DELETED',
+    CANCELED = 'CANCELED'
 }
 
 export interface SaleItem {
