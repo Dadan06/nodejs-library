@@ -49,7 +49,7 @@ class SaleController implements ControllerRead {
     }
 
     cancelSale(req: Request, res: Response, next: NextFunction): void {
-        wrapToSendBackResponse<Sale | null>(saleService.cancelSale(req.params.orderId), res, next);
+        wrapToSendBackResponse<Sale | null>(saleService.cancelSale(req.params.saleId), res, next);
     }
 }
 
