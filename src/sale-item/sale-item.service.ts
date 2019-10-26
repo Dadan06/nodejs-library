@@ -49,7 +49,8 @@ class SaleItemService implements ServiceRead<SaleItem>, ServiceWrite<SaleItem> {
         }
         product.quantity += saleItem.quantity;
         productRepository.update(product._id, product);
-        return saleItemRepository.update(id, { ...saleItem, status: SaleItemStatus.DELETED });
+        await saleItemRepository.update(id, { ...saleItem, status: SaleItemStatus.DELETED });
+        return saleItemRepository.findById(id).exec();
     }
 }
 

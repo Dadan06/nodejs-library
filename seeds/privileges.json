@@ -124,5 +124,33 @@
         },
         "name": "SALE_MONITORING",
         "category": "SALE"
+    },
+    {
+        "_id": {
+            "$oid": "01fe45d49926fbf44d633892"
+        },
+        "name": "VIEW_CLIENT",
+        "category": "CLIENT"
+    },
+    {
+        "_id": {
+            "$oid": "01fe45d49926fbf44d633893"
+        },
+        "name": "CREATE_CLIENT",
+        "category": "CLIENT"
+    },
+    {
+        "_id": {
+            "$oid": "01fe45d49926fbf44d633894"
+        },
+        "name": "EDIT_CLIENT",
+        "category": "CLIENT"
+    },
+    {
+        "_id": {
+            "$oid": "01fe45d49926fbf44d633895"
+        },
+        "name": "DELETE_CLIENT",
+        "category": "CLIENT"
     }
 ]

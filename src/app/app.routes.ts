@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import * as passport from 'passport';
 import { authenticationRoutes } from '../authentication/authentication.routes';
+import { clientRoutes } from '../client/client.route';
 import { privilegeRoutes } from '../privilege/privilege.route';
 import { productRoutes } from '../product/product.route';
 import { roleRoutes } from '../role/role.route';
@@ -42,6 +43,7 @@ class AppRouter {
             passport.authenticate('jwt', { session: false }),
             saleItemRoutes
         );
+        this.router.use('/client', passport.authenticate('jwt', { session: false }), clientRoutes);
     }
 }
 
