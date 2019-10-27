@@ -7,7 +7,7 @@ const schema = new mongoose.Schema({
     name: { type: String, required: true },
     address: { type: String, required: true },
     contact: { type: String, required: true },
-    clientType: {
+    type: {
         type: String,
         enum: Object.values(ClientType),
         required: true
