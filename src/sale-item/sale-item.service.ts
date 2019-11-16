@@ -3,8 +3,11 @@ import { ServiceWrite } from '../common/service/service-write.interface';
 import { ProductNotFoundException } from '../product/product-not-found.exception';
 import { Product } from '../product/product.model';
 import { productRepository } from '../product/product.repository';
+import { HttpStatusCode } from '../shared/constants/http-status-codes.constant';
+import { HttpException } from '../shared/types/http-exception.interface';
 import { Page, Paginated } from '../shared/types/page.interface';
 import { Sort } from '../shared/types/sort.type';
+import { SaleItemNotFoundException } from './sale-item-not-found.exception';
 import { SaleItem, SaleItemStatus } from './sale-item.model';
 import { saleItemRepository } from './sale-item.repository';
 
@@ -51,6 +54,29 @@ class SaleItemService implements ServiceRead<SaleItem>, ServiceWrite<SaleItem> {
         productRepository.update(product._id, product);
         await saleItemRepository.update(id, { ...saleItem, status: SaleItemStatus.DELETED });
         return saleItemRepository.findById(id).exec();
+    }
+
+    async incrementQty(saleItem: SaleItem): Promise<SaleItem> {
+        const saleItemDb: SaleItem | null = await saleItemRepository.findById(saleItem._id).exec();
+        if (!saleItemDb) {
+            throw new SaleItemNotFoundException(saleItem._id);
+        }
+        saleItemDb.quantity += 1;
+        if ((saleItemDb.product as Product).quantity < saleItemDb.quantity) {
+            throw new HttpException(HttpStatusCode.GONE, 'Quantité insuffisante');
+        }
+        await saleItemRepository.update(saleItemDb._id, saleItemDb);
+        return saleItemDb;
+    }
+
+    async decrementQty(saleItem: SaleItem): Promise<SaleItem> {
+        const saleItemDb: SaleItem | null = await saleItemRepository.findById(saleItem._id).exec();
+        if (!saleItemDb) {
+            throw new SaleItemNotFoundException(saleItem._id);
+        }
+        saleItem.quantity -= 1;
+        await saleItemRepository.update(saleItemDb._id, saleItemDb);
+        return saleItemDb;
     }
 }
 
