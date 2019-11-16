@@ -61,11 +61,15 @@ class SaleItemService implements ServiceRead<SaleItem>, ServiceWrite<SaleItem> {
         if (!saleItemDb) {
             throw new SaleItemNotFoundException(saleItem._id);
         }
-        saleItemDb.quantity += 1;
-        if ((saleItemDb.product as Product).quantity < saleItemDb.quantity) {
+        const saleItemProduct = saleItemDb.product as Product;
+        if (saleItemProduct.quantity === 0) {
             throw new HttpException(HttpStatusCode.GONE, 'Quantité insuffisante');
         }
+        saleItemDb.quantity += 1;
         await saleItemRepository.update(saleItemDb._id, saleItemDb);
+        await productRepository.update(saleItemProduct._id, {
+            quantity: saleItemProduct.quantity - 1
+        });
         return saleItemDb;
     }
 
@@ -74,8 +78,12 @@ class SaleItemService implements ServiceRead<SaleItem>, ServiceWrite<SaleItem> {
         if (!saleItemDb) {
             throw new SaleItemNotFoundException(saleItem._id);
         }
-        saleItem.quantity -= 1;
+        saleItemDb.quantity -= 1;
+        const saleItemProduct = saleItemDb.product as Product;
         await saleItemRepository.update(saleItemDb._id, saleItemDb);
+        await productRepository.update(saleItemProduct._id, {
+            quantity: saleItemProduct.quantity + 1
+        });
         return saleItemDb;
     }
 }
