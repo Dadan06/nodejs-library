@@ -68,14 +68,7 @@ class UserService implements ServiceRead<User>, ServiceWrite<User> {
         if (item.password) {
             item.password = await bcrypt.hash(item.password, 10);
         } else {
-            const existingUser: User | null = await userRepository
-                .findOne({ login: item.login })
-                .exec();
-            if (existingUser) {
-                throw new HttpException(HttpStatusCode.BAD_REQUEST, DUPLICATE_USER_ERROR);
-            }
-
-            const user: User | null = await userRepository.findById(id).exec();
+            const user: User | null = await userRepository.findById(item._id).exec();
             if (user) {
                 item.password = user.password;
             }
