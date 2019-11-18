@@ -2,6 +2,7 @@ import { Router } from 'express';
 import * as passport from 'passport';
 import { authenticationRoutes } from '../authentication/authentication.routes';
 import { clientRoutes } from '../client/client.route';
+import { paymentRoutes } from '../payment/payment.route';
 import { privilegeRoutes } from '../privilege/privilege.route';
 import { productRoutes } from '../product/product.route';
 import { roleRoutes } from '../role/role.route';
@@ -44,6 +45,11 @@ class AppRouter {
             saleItemRoutes
         );
         this.router.use('/client', passport.authenticate('jwt', { session: false }), clientRoutes);
+        this.router.use(
+            '/payment',
+            passport.authenticate('jwt', { session: false }),
+            paymentRoutes
+        );
     }
 }
 

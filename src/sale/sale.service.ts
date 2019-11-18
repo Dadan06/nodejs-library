@@ -11,7 +11,7 @@ import { Page, Paginated } from '../shared/types/page.interface';
 import { Sort } from '../shared/types/sort.type';
 import { User } from '../user/user.model';
 import { SaleNotFoundException } from './sale-not-found.exception';
-import { Sale, SaleStatus, SaleType } from './sale.model';
+import { Sale, SaleStatus } from './sale.model';
 import { saleRepository } from './sale.repository';
 
 export interface PaginatedSale extends Paginated<Sale> {}
@@ -44,7 +44,6 @@ class SaleService implements ServiceRead<Sale> {
         const no = (await this.getSaleCount()) + 1;
         return saleRepository.create({
             no,
-            saleType: SaleType.DIRECT_SALE,
             saleStatus: SaleStatus.IN_PROGRESS,
             saleItems: [],
             saleDate: new Date(),
@@ -71,6 +70,7 @@ class SaleService implements ServiceRead<Sale> {
             await productRepository.update(product._id, { quantity: product.quantity - 1 });
         }
         const saleItem: SaleItem = await saleItemRepository
+            // tslint:disable-next-line: no-object-literal-type-assertion
             .create({
                 status: SaleItemStatus.ORDERED,
                 product: dbProduct,
