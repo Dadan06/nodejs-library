@@ -261,3 +261,16 @@ export const getFilteredWithEmbeddedFields = <T extends Document>(
         ])
         .exec();
 };
+
+export const checkDuplicate = async <T extends Document, U>(
+    repository: BaseRepository<T, U>,
+    key: string,
+    subject: any
+): Promise<boolean> => {
+    let criteria: object = { [key]: subject[key] };
+    if (subject._id) {
+        criteria = { ...criteria, _id: { $ne: subject._id } };
+    }
+    const existing: T | null = await repository.findOne(criteria).exec();
+    return !!existing;
+};
