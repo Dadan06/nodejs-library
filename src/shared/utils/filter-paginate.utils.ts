@@ -1,8 +1,15 @@
-// tslint:disable-next-line: import-blacklist
+// tslint:disable:no-any import-blacklist
 import { get } from 'lodash';
 import { Document, DocumentQuery, Model } from 'mongoose';
 import { BaseRepository } from '../../common/repository/base.repository';
 import { FilterItem } from '../types/filter-item.interface';
+
+export interface FilterUpdateConfig {
+    filter: string;
+    repository: BaseRepository<any, any>;
+    criteria: any;
+    field: string;
+}
 
 export const buildSearchCriteria = <T>(
     search: string | null,
@@ -17,7 +24,6 @@ export const buildSearchCriteria = <T>(
         : {};
 
 export const buildFilterCriteria = <T>(
-    // tslint:disable-next-line:no-any
     criteria: Record<string, any>,
     fieldMap: Record<string, string>
 ): Object =>
@@ -36,7 +42,6 @@ export const initFilterUpdates = async <T extends Document, U>(
     fieldMap: Record<string, string>,
     repository: BaseRepository<T, U>
 ): Promise<Record<string, FilterItem[]>> => {
-    // tslint:disable-next-line:no-any
     const filterUpdates: Record<string, any> = {};
     for (const key in fieldMap) {
         if (fieldMap.hasOwnProperty(key)) {
@@ -50,7 +55,6 @@ export const initFilterUpdates = async <T extends Document, U>(
     return filterUpdates as Record<string, FilterItem[]>;
 };
 
-// tslint:disable-next-line:no-any
 export const setFilterUpdatesCounts = <T extends Record<string, any>>(
     filterUpdates: Record<string, FilterItem[]>,
     entities: T[],
@@ -62,7 +66,6 @@ export const setFilterUpdatesCounts = <T extends Record<string, any>>(
     entities.forEach((e: T) => {
         Object.entries(fieldMap).forEach(([key, value]) => {
             const val = get(e, value);
-            // tslint:disable-next-line:no-any
             const values: any[] = Array.isArray(val) ? val : [val];
             values.forEach(v => {
                 counts[key][v] = (counts[key][v] || 0) + 1;
@@ -78,11 +81,9 @@ export const setFilterUpdatesCounts = <T extends Record<string, any>>(
 };
 
 export const buildMergedCriteria = <T extends Document>(
-    // tslint:disable-next-line:no-any
     criteria: Record<string, any>,
     fieldMap: Record<string, string>,
     searchFields: Array<string>,
-    // tslint:disable-next-line:no-any
     additionnalCriteria?: Record<string, any>
 ): Object => {
     const filterCriteria = buildFilterCriteria<T>(criteria, fieldMap);
@@ -99,7 +100,6 @@ export interface FilteredItems<T> {
 export const getFilteredItems = <T extends Document>(param: {
     schema: Model<T>;
     populateStages: Object[];
-    // tslint:disable-next-line:no-any
     criteria: Record<string, any>;
     fieldMap: Record<string, string>;
     searchFields: Array<string>;
@@ -139,9 +139,7 @@ export const getFilteredItems = <T extends Document>(param: {
     ]);
 };
 
-// tslint:disable-next-line:no-any
 export const getFiltered = <T extends Document, U>(
-    // tslint:disable-next-line:no-any
     criteria: Record<string, any>,
     fieldMap: Record<string, string>,
     searchFields: Array<string>,
@@ -153,12 +151,10 @@ export const getFiltered = <T extends Document, U>(
         .exec();
 
 export const getFilteredWithAdditionnalCriteria = <T extends Document, U>(param: {
-    // tslint:disable-next-line:no-any
     criteria: Record<string, any>;
     fieldMap: Record<string, string>;
     searchFields: Array<string>;
     repository: BaseRepository<T, U>;
-    // tslint:disable-next-line:no-any
     additionnalCriteria: Record<string, any>;
 }): Promise<T[]> =>
     param.repository
@@ -173,27 +169,15 @@ export const getFilteredWithAdditionnalCriteria = <T extends Document, U>(param:
         .sort({})
         .exec();
 
-export const checkDuplicate = async <T extends Document, U>(
-    repository: BaseRepository<T, U>,
-    key: string,
-    // tslint:disable-next-line: no-any
-    subject: any
-): Promise<boolean> => {
-    let criteria: object = { [key]: subject[key] };
-    if (subject._id) {
-        criteria = { ...criteria, _id: { $ne: subject._id } };
-    }
-    const existing: T | null = await repository.findOne(criteria).exec();
-    return !!existing;
-};
-
 export const getFilteredDocument = <T extends Document, U>(
-    // tslint:disable-next-line:no-any
     criteria: Record<string, any>,
     fieldMap: Record<string, string>,
     searchFields: Array<string>,
-    repository: BaseRepository<T, U>
-): DocumentQuery<T[], T> => repository.find(buildMergedCriteria(criteria, fieldMap, searchFields));
+    repository: BaseRepository<T, U>,
+    additionnalCriteria?: Record<string, any>
+    // tslint:disable-next-line: parameters-max-number
+): DocumentQuery<T[], T> =>
+    repository.find(buildMergedCriteria(criteria, fieldMap, searchFields, additionnalCriteria));
 
 export const buildPeriodCriteria = (fieldName: string, from: Date, to: Date) => ({
     [fieldName]: {
@@ -203,7 +187,6 @@ export const buildPeriodCriteria = (fieldName: string, from: Date, to: Date) => 
 });
 
 export const buildCriteriasWithPeriod = <T extends Document>(
-    // tslint:disable-next-line:no-any
     criteria: Record<string, any>,
     fieldMap: Record<string, string>,
     searchFields: Array<string>,
@@ -220,7 +203,6 @@ export const buildCriteriasWithPeriod = <T extends Document>(
 };
 
 export const getFilteredWithPeriod = <T extends Document, U>(input: {
-    // tslint:disable-next-line:no-any
     criteria: Record<string, any>;
     fieldMap: Record<string, string>;
     searchFields: Array<string>;
@@ -238,3 +220,44 @@ export const getFilteredWithPeriod = <T extends Document, U>(input: {
         )
         .sort({})
         .exec();
+
+export const initFilterUpdatesUsingMultipleRepository = async <T extends Document, U>(
+    filterUpdateConfigs: FilterUpdateConfig[]
+): Promise<Record<string, FilterItem[]>> => {
+    const filterUpdates: Record<string, any> = {};
+    for (const { filter, repository, criteria, field } of filterUpdateConfigs) {
+        const items = await repository
+            .find(criteria)
+            .distinct(field)
+            .exec();
+        filterUpdates[filter] = items
+            .filter(name => name)
+            .map((name: string): FilterItem => ({ name, count: 0 }));
+    }
+    return filterUpdates as Record<string, FilterItem[]>;
+};
+
+export const getFilteredWithEmbeddedFields = <T extends Document>(
+    criteria: Record<string, any>,
+    fieldMap: Record<string, string>,
+    searchFields: Array<string>,
+    model: Model<T>,
+    populationStages: object[],
+    additionnalCriteria?: Record<string, any>
+    // tslint:disable-next-line: parameters-max-number
+) => {
+    const searchCriteria = buildSearchCriteria(criteria.search, searchFields);
+    const filterCriteria = buildFilterCriteria(criteria, fieldMap);
+    return model
+        .aggregate([
+            ...populationStages,
+            {
+                $match: {
+                    ...searchCriteria,
+                    ...filterCriteria,
+                    ...additionnalCriteria
+                }
+            }
+        ])
+        .exec();
+};
