@@ -1,4 +1,5 @@
 import * as mongoose from 'mongoose';
+import { Product } from '../product/product.model';
 import { SaleItem, SaleItemStatus } from './sale-item.model';
 
 export interface SaleItemDocument extends SaleItem, mongoose.Document {}
@@ -22,5 +23,11 @@ schema.pre('find', function() {
 schema.pre('findOne', function() {
     this.populate('product');
 });
+
+schema.virtual('amount').get(function(this: SaleItem) {
+    return (this.product as Product).sellingPrice * this.quantity;
+});
+
+schema.set('toJSON', { virtuals: true });
 
 export const saleItemSchema = mongoose.model<SaleItemDocument>('SaleItem', schema);

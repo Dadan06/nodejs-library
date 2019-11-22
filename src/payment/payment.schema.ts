@@ -4,6 +4,7 @@ import { Payment, PaymentType } from './payment.model';
 export interface PaymentDocument extends Payment, mongoose.Document {}
 
 const schema = new mongoose.Schema({
+    amount: { type: Number, required: true },
     paymentDate: { type: Date, required: true },
     paymentType: {
         type: String,

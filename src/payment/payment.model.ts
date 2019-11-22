@@ -8,7 +8,8 @@ export enum PaymentType {
 export interface Payment {
     // tslint:disable-next-line: no-any
     _id: any;
-    paymentdate: Date;
+    paymentDate: Date;
+    amount: number;
     sale: Sale | string;
     paymentType: PaymentType;
 }
