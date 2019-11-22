@@ -6,19 +6,36 @@ import { HttpStatusCode } from '../shared/constants/http-status-codes.constant';
 import { HttpException } from '../shared/types/http-exception.interface';
 import { Page, Paginated } from '../shared/types/page.interface';
 import { Sort } from '../shared/types/sort.type';
-import { getFilteredDocument } from '../shared/utils/filter-paginate.utils';
+import { getFilteredWithEmbeddedFields } from '../shared/utils/filter-paginate.utils';
 import { paginate } from '../shared/utils/paginate';
 import { User } from './user.model';
 import { userRepository } from './user.repository';
+import { userSchema } from './user.schema';
 
 export interface PaginatedUser extends Paginated<User> {}
 
 export type FilterFieldMap = Record<string, keyof User>;
 
-const FILTER_FIELDS_MAP: FilterFieldMap = {};
-const SEARCH_FIELDS: Array<string> = ['firstname', 'lastname', 'login', 'roleName'];
+const SEARCH_FIELDS: Array<string> = ['firstname', 'lastname', 'login', 'role.name'];
 
 const DUPLICATE_USER_ERROR = 'Ce login est déja utilisé';
+
+const ROLE_POPULATION_STAGE = [
+    {
+        $lookup: {
+            from: 'roles',
+            localField: 'role',
+            foreignField: '_id',
+            as: 'role'
+        }
+    },
+    {
+        $unwind: {
+            path: '$role',
+            preserveNullAndEmptyArrays: true
+        }
+    }
+];
 
 class UserService implements ServiceRead<User>, ServiceWrite<User> {
     async getPaginatedList(
@@ -27,16 +44,14 @@ class UserService implements ServiceRead<User>, ServiceWrite<User> {
         page: Page,
         order: Sort<User> = {}
     ): Promise<PaginatedUser> {
-        const users: User[] = await getFilteredDocument(
+        const users: User[] = await getFilteredWithEmbeddedFields(
             criteria,
-            FILTER_FIELDS_MAP,
+            {},
             SEARCH_FIELDS,
-            userRepository
-        )
-            .populate('role')
-            .where('role.roleType')
-            .ne(RoleType.ROOT)
-            .exec();
+            userSchema,
+            ROLE_POPULATION_STAGE,
+            { 'role.roleType': { $ne: RoleType.ROOT } }
+        );
         return {
             items: paginate(users, page),
             totalItems: users.length
