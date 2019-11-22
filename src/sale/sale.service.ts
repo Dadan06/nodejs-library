@@ -114,6 +114,14 @@ class SaleService implements ServiceRead<Sale> {
 
     async saveSale(item: Sale): Promise<Payment> {
         const amount = this.calculateSaleAmount(item);
+        await saleRepository.update(item._id, { saleStatus: SaleStatus.TERMINATED });
+        for (const saleItem of item.saleItems as SaleItem[]) {
+            if (saleItem.status === SaleItemStatus.ORDERED) {
+                await saleItemRepository.update(saleItem._id, {
+                    status: SaleItemStatus.TERMINATED
+                });
+            }
+        }
         return paymentRepository.create({
             amount,
             paymentDate: new Date(),
