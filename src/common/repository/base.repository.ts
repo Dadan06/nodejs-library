@@ -38,7 +38,7 @@ export abstract class BaseRepository<T extends mongoose.Document, U>
         return this.model.findOne(conditions);
     }
 
-    create(item: U): Promise<T> {
+    create(item: Partial<U>): Promise<T> {
         return this.model.create(item);
     }
 
