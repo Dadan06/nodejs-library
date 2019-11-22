@@ -138,7 +138,10 @@ class SaleService implements ServiceRead<Sale> {
         const saleItems: SaleItem[] = (sale.saleItems as SaleItem[]).filter(
             o => o.status === SaleItemStatus.ORDERED
         );
-        return saleItems.reduce((m, saleItem) => m + (saleItem.amount || 0), 0);
+        return saleItems.reduce((m, saleItem) => {
+            const product = saleItem.product as Product;
+            return m + product.sellingPrice * product.quantity;
+        }, 0);
     }
 }
 

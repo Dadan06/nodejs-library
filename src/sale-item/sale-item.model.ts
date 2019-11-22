@@ -11,7 +11,6 @@ export interface SaleItem {
     _id: any;
     product: string | Product;
     quantity: number;
-    amount?: number;
     status: SaleItemStatus;
     sale: string;
 }
