@@ -1,4 +1,6 @@
 import { ServiceRead } from '../common/service/service-read.interface';
+import { Payment, PaymentType } from '../payment/payment.model';
+import { paymentRepository } from '../payment/payment.repository';
 import { ProductNotFoundException } from '../product/product-not-found.exception';
 import { Product } from '../product/product.model';
 import { productRepository } from '../product/product.repository';
@@ -110,6 +112,16 @@ class SaleService implements ServiceRead<Sale> {
         return sale;
     }
 
+    async saveSale(item: Sale): Promise<Payment> {
+        const amount = this.calculateSaleAmount(item);
+        return paymentRepository.create({
+            amount,
+            paymentDate: new Date(),
+            paymentType: PaymentType.CASH,
+            sale: item._id
+        });
+    }
+
     private ensureStockIsEnough(product: Product | null, quantity: number) {
         if (!(product && product.quantity)) {
             throw new HttpException(
@@ -120,6 +132,13 @@ class SaleService implements ServiceRead<Sale> {
         if (product && product.quantity < quantity) {
             throw new HttpException(HttpStatusCode.GONE, `Quantité disponible insuffisante`);
         }
+    }
+
+    private calculateSaleAmount(sale: Sale): number {
+        const saleItems: SaleItem[] = (sale.saleItems as SaleItem[]).filter(
+            o => o.status === SaleItemStatus.ORDERED
+        );
+        return saleItems.reduce((m, saleItem) => m + (saleItem.amount || 0), 0);
     }
 }
 

@@ -14,6 +14,7 @@ class SaleRouter {
             .route('/')
             .get(saleController.getPaginatedList.bind(saleController))
             .post(saleController.create.bind(saleController));
+        this.router.route('/save').post(saleController.saveSale.bind(saleController));
         this.router
             .route('/:saleId/add-product')
             .post(saleController.addProduct.bind(saleController));

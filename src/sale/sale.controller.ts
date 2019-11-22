@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { ControllerRead } from '../common/controller/controller-read.interface';
+import { Payment } from '../payment/payment.model';
 import { SaleItem } from '../sale-item/sale-item.model';
 import { Page } from '../shared/types/page.interface';
 import { wrapToSendBackResponse } from '../shared/wrap-to-send-back-response';
@@ -50,6 +51,10 @@ class SaleController implements ControllerRead {
 
     cancelSale(req: Request, res: Response, next: NextFunction): void {
         wrapToSendBackResponse<Sale | null>(saleService.cancelSale(req.params.saleId), res, next);
+    }
+
+    saveSale(req: Request, res: Response, next: NextFunction): void {
+        wrapToSendBackResponse<Payment>(saleService.saveSale(req.body), res, next);
     }
 }
 
