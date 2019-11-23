@@ -148,7 +148,7 @@ class SaleService implements ServiceRead<Sale> {
         );
         return saleItems.reduce((m, saleItem) => {
             const product = saleItem.product as Product;
-            return m + product.sellingPrice * product.quantity;
+            return m + product.sellingPrice * saleItem.quantity;
         }, 0);
     }
 }
