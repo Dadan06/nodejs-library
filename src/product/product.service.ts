@@ -2,16 +2,37 @@ import { ServiceRead } from '../common/service/service-read.interface';
 import { ServiceWrite } from '../common/service/service-write.interface';
 import { Page, Paginated } from '../shared/types/page.interface';
 import { Sort } from '../shared/types/sort.type';
-import { checkDuplicate, getFilteredDocument } from '../shared/utils/filter-paginate.utils';
+import {
+    checkDuplicate,
+    getFilteredWithEmbeddedFields
+} from '../shared/utils/filter-paginate.utils';
 import { Product } from './product.model';
 import { productRepository } from './product.repository';
+import { productSchema } from './product.schema';
 
 export interface PaginatedProduct extends Paginated<Product> {}
 
 export type FilterFieldMap = Record<string, keyof Product>;
 
 const FILTER_FIELDS_MAP: FilterFieldMap = {};
-const SEARCH_FIELDS: Array<string> = ['name'];
+const SEARCH_FIELDS: Array<string> = ['name', 'supplier.name'];
+
+const SUPPLIER_POPULATION_STAGE = [
+    {
+        $lookup: {
+            from: 'suppliers',
+            localField: 'supplier',
+            foreignField: '_id',
+            as: 'supplier'
+        }
+    },
+    {
+        $unwind: {
+            path: '$supplier',
+            preserveNullAndEmptyArrays: true
+        }
+    }
+];
 
 class ProductService implements ServiceRead<Product>, ServiceWrite<Product> {
     async getPaginatedList(
@@ -21,12 +42,13 @@ class ProductService implements ServiceRead<Product>, ServiceWrite<Product> {
         order: Sort<Product> = {}
     ): Promise<PaginatedProduct> {
         const totalItems: number = await productRepository.count(criteria);
-        const items: Product[] = await getFilteredDocument(
+        const items: Product[] = await getFilteredWithEmbeddedFields(
             criteria,
-            FILTER_FIELDS_MAP,
+            {},
             SEARCH_FIELDS,
-            productRepository
-        ).exec();
+            productSchema,
+            SUPPLIER_POPULATION_STAGE
+        );
         return { items, totalItems };
     }
 
