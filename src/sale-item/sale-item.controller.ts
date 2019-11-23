@@ -55,14 +55,6 @@ class SaleItemController implements ControllerRead, ControllerWrite {
     changeQty(req: Request, res: Response, next: NextFunction): void {
         wrapToSendBackResponse<SaleItem>(saleItemService.changeQty(req.body), res, next);
     }
-
-    incrementQty(req: Request, res: Response, next: NextFunction): void {
-        wrapToSendBackResponse<SaleItem>(saleItemService.incrementQty(req.body), res, next);
-    }
-
-    decrementQty(req: Request, res: Response, next: NextFunction): void {
-        wrapToSendBackResponse<SaleItem>(saleItemService.decrementQty(req.body), res, next);
-    }
 }
 
 export const saleItemController = new SaleItemController();

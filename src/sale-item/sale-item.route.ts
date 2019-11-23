@@ -18,12 +18,6 @@ class SaleItemRouter {
             .route('/change-qty')
             .post(saleItemController.changeQty.bind(saleItemController));
         this.router
-            .route('/increment-qty')
-            .post(saleItemController.incrementQty.bind(saleItemController));
-        this.router
-            .route('/decrement-qty')
-            .post(saleItemController.decrementQty.bind(saleItemController));
-        this.router
             .route('/:saleItemId/delete')
             .put(saleItemController.deleteItem.bind(saleItemController));
         this.router

@@ -68,37 +68,6 @@ class SaleItemService implements ServiceRead<SaleItem>, ServiceWrite<SaleItem> {
         await saleItemRepository.update(saleItemDb._id, saleItem);
         return saleItem;
     }
-
-    async incrementQty(saleItem: SaleItem): Promise<SaleItem> {
-        const saleItemDb: SaleItem | null = await saleItemRepository.findById(saleItem._id).exec();
-        if (!saleItemDb) {
-            throw new SaleItemNotFoundException(saleItem._id);
-        }
-        const saleItemProduct = saleItemDb.product as Product;
-        if (saleItemProduct.quantity === 0) {
-            throw new HttpException(HttpStatusCode.GONE, 'Quantité insuffisante');
-        }
-        saleItemDb.quantity += 1;
-        await saleItemRepository.update(saleItemDb._id, saleItemDb);
-        await productRepository.update(saleItemProduct._id, {
-            quantity: saleItemProduct.quantity - 1
-        });
-        return saleItemDb;
-    }
-
-    async decrementQty(saleItem: SaleItem): Promise<SaleItem> {
-        const saleItemDb: SaleItem | null = await saleItemRepository.findById(saleItem._id).exec();
-        if (!saleItemDb) {
-            throw new SaleItemNotFoundException(saleItem._id);
-        }
-        saleItemDb.quantity -= 1;
-        const saleItemProduct = saleItemDb.product as Product;
-        await saleItemRepository.update(saleItemDb._id, saleItemDb);
-        await productRepository.update(saleItemProduct._id, {
-            quantity: saleItemProduct.quantity + 1
-        });
-        return saleItemDb;
-    }
 }
 
 export const saleItemService = new SaleItemService();
