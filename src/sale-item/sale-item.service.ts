@@ -56,6 +56,19 @@ class SaleItemService implements ServiceRead<SaleItem>, ServiceWrite<SaleItem> {
         return saleItemRepository.findById(id).exec();
     }
 
+    async changeQty(saleItem: SaleItem): Promise<SaleItem> {
+        const saleItemDb: SaleItem | null = await saleItemRepository.findById(saleItem._id).exec();
+        if (!saleItemDb) {
+            throw new SaleItemNotFoundException(saleItem._id);
+        }
+        const saleItemProduct = saleItemDb.product as Product;
+        if (saleItemProduct.quantity < saleItem.quantity) {
+            throw new HttpException(HttpStatusCode.GONE, 'Quantité insuffisante');
+        }
+        await saleItemRepository.update(saleItemDb._id, saleItem);
+        return saleItem;
+    }
+
     async incrementQty(saleItem: SaleItem): Promise<SaleItem> {
         const saleItemDb: SaleItem | null = await saleItemRepository.findById(saleItem._id).exec();
         if (!saleItemDb) {
