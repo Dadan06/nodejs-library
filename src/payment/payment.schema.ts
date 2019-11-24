@@ -1,16 +1,11 @@
 import * as mongoose from 'mongoose';
-import { Payment, PaymentType } from './payment.model';
+import { Payment } from './payment.model';
 
 export interface PaymentDocument extends Payment, mongoose.Document {}
 
 const schema = new mongoose.Schema({
     amount: { type: Number, required: true },
     paymentDate: { type: Date, required: true },
-    paymentType: {
-        type: String,
-        enum: Object.values(PaymentType),
-        required: true
-    },
     sale: { type: mongoose.Schema.Types.ObjectId, ref: 'Sale', required: true }
 });
 
