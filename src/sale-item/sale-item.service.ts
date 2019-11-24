@@ -8,7 +8,7 @@ import { HttpException } from '../shared/types/http-exception.interface';
 import { Page, Paginated } from '../shared/types/page.interface';
 import { Sort } from '../shared/types/sort.type';
 import { SaleItemNotFoundException } from './sale-item-not-found.exception';
-import { SaleItem, SaleItemStatus } from './sale-item.model';
+import { QuantityChangingData, SaleItem, SaleItemStatus } from './sale-item.model';
 import { saleItemRepository } from './sale-item.repository';
 
 export interface PaginatedSaleItem extends Paginated<SaleItem> {}
@@ -56,16 +56,20 @@ class SaleItemService implements ServiceRead<SaleItem>, ServiceWrite<SaleItem> {
         return saleItemRepository.findById(id).exec();
     }
 
-    async changeQty(saleItem: SaleItem): Promise<SaleItem> {
+    async changeQty(quantityChangingData: QuantityChangingData): Promise<SaleItem> {
+        const saleItem = quantityChangingData.saleItem;
         const saleItemDb: SaleItem | null = await saleItemRepository.findById(saleItem._id).exec();
         if (!saleItemDb) {
             throw new SaleItemNotFoundException(saleItem._id);
         }
-        const saleItemProduct = saleItemDb.product as Product;
+        const saleItemProduct = saleItem.product as Product;
+        saleItemProduct.quantity += quantityChangingData.previousValue;
         if (saleItemProduct.quantity < saleItem.quantity) {
             throw new HttpException(HttpStatusCode.GONE, 'Quantité insuffisante');
         }
-        await saleItemRepository.update(saleItemDb._id, saleItem);
+        saleItemProduct.quantity -= saleItem.quantity;
+        await saleItemRepository.update(saleItem._id, saleItem);
+        await productRepository.update(saleItemProduct._id, saleItemProduct);
         return saleItem;
     }
 }

@@ -7,6 +7,11 @@ export enum SaleItemStatus {
     TERMINATED = 'TERMINATED'
 }
 
+export interface QuantityChangingData {
+    previousValue: number;
+    saleItem: SaleItem;
+}
+
 export interface SaleItem {
     // tslint:disable-next-line:no-any
     _id: any;
