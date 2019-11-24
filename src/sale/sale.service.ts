@@ -1,5 +1,5 @@
 import { ServiceRead } from '../common/service/service-read.interface';
-import { Payment, PaymentType } from '../payment/payment.model';
+import { Payment } from '../payment/payment.model';
 import { paymentRepository } from '../payment/payment.repository';
 import { ProductNotFoundException } from '../product/product-not-found.exception';
 import { Product } from '../product/product.model';
@@ -115,7 +115,12 @@ class SaleService implements ServiceRead<Sale> {
 
     async saveSale(item: Sale): Promise<Payment> {
         const amount = this.calculateSaleAmount(item);
-        await saleRepository.update(item._id, { saleStatus: SaleStatus.TERMINATED });
+        await saleRepository.update(item._id, {
+            discount: item.discount,
+            client: item.client,
+            saleType: item.saleType,
+            saleStatus: SaleStatus.TERMINATED
+        });
         for (const saleItem of item.saleItems as SaleItem[]) {
             if (saleItem.status === SaleItemStatus.ORDERED) {
                 await saleItemRepository.update(saleItem._id, {
@@ -126,7 +131,6 @@ class SaleService implements ServiceRead<Sale> {
         return paymentRepository.create({
             amount,
             paymentDate: new Date(),
-            paymentType: PaymentType.CASH,
             sale: item._id
         });
     }

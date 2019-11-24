@@ -1,5 +1,5 @@
 import * as mongoose from 'mongoose';
-import { Sale, SaleStatus } from './sale.model';
+import { Sale, SaleStatus, SaleType } from './sale.model';
 
 export interface SaleDocument extends Sale, mongoose.Document {}
 
@@ -12,6 +12,11 @@ const schema = new mongoose.Schema({
     saleStatus: {
         type: String,
         enum: Object.values(SaleStatus),
+        required: true
+    },
+    saleType: {
+        type: String,
+        enum: Object.values(SaleType),
         required: true
     },
     seller: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }],
