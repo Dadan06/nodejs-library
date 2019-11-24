@@ -50,7 +50,8 @@ class SaleService implements ServiceRead<Sale> {
             saleItems: [],
             saleDate: new Date(),
             seller: user,
-            amount: 0
+            amount: 0,
+            discount: 0
         });
     }
 
@@ -146,10 +147,12 @@ class SaleService implements ServiceRead<Sale> {
         const saleItems: SaleItem[] = (sale.saleItems as SaleItem[]).filter(
             o => o.status === SaleItemStatus.ORDERED
         );
-        return saleItems.reduce((m, saleItem) => {
-            const product = saleItem.product as Product;
-            return m + product.sellingPrice * saleItem.quantity;
-        }, 0);
+        return (
+            saleItems.reduce((m, saleItem) => {
+                const product = saleItem.product as Product;
+                return m + product.sellingPrice * saleItem.quantity;
+            }, 0) - sale.discount
+        );
     }
 }
 

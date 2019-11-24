@@ -1,3 +1,4 @@
+import { Client } from '../client/client.model';
 import { SaleItem } from '../sale-item/sale-item.model';
 import { User } from '../user/user.model';
 
@@ -14,6 +15,8 @@ export interface Sale {
     saleDate: Date;
     saleItems: string[] | SaleItem[];
     amount: number;
+    discount: number;
     saleStatus: SaleStatus;
     seller: string | User;
+    client?: string | Client;
 }
