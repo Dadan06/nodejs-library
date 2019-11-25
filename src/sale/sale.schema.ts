@@ -17,7 +17,7 @@ const schema = new mongoose.Schema({
     saleType: {
         type: String,
         enum: Object.values(SaleType),
-        required: true
+        required: false
     },
     seller: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }],
     client: { type: mongoose.Schema.Types.ObjectId, ref: 'Client', required: false }
