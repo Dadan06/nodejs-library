@@ -135,6 +135,18 @@ class SaleService implements ServiceRead<Sale> {
         });
     }
 
+    calculateSaleAmount(sale: Sale): number {
+        const saleItems: SaleItem[] = (sale.saleItems as SaleItem[]).filter(
+            o => o.status === SaleItemStatus.ORDERED
+        );
+        return (
+            saleItems.reduce((m, saleItem) => {
+                const product = saleItem.product as Product;
+                return m + product.sellingPrice * saleItem.quantity;
+            }, 0) - sale.discount
+        );
+    }
+
     private ensureStockIsEnough(product: Product | null, quantity: number) {
         if (!(product && product.quantity)) {
             throw new HttpException(
@@ -145,18 +157,6 @@ class SaleService implements ServiceRead<Sale> {
         if (product && product.quantity < quantity) {
             throw new HttpException(HttpStatusCode.GONE, `Quantité disponible insuffisante`);
         }
-    }
-
-    private calculateSaleAmount(sale: Sale): number {
-        const saleItems: SaleItem[] = (sale.saleItems as SaleItem[]).filter(
-            o => o.status === SaleItemStatus.ORDERED
-        );
-        return (
-            saleItems.reduce((m, saleItem) => {
-                const product = saleItem.product as Product;
-                return m + product.sellingPrice * saleItem.quantity;
-            }, 0) - sale.discount
-        );
     }
 }
 
