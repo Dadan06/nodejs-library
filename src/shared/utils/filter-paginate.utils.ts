@@ -202,25 +202,6 @@ export const buildCriteriasWithPeriod = <T extends Document>(
     };
 };
 
-export const getFilteredWithPeriod = <T extends Document, U>(input: {
-    criteria: Record<string, any>;
-    fieldMap: Record<string, string>;
-    searchFields: Array<string>;
-    repository: BaseRepository<T, U>;
-    periodFilterFieldName: string;
-}): Promise<T[]> =>
-    input.repository
-        .find(
-            buildCriteriasWithPeriod(
-                input.criteria,
-                input.fieldMap,
-                input.searchFields,
-                input.periodFilterFieldName
-            )
-        )
-        .sort({})
-        .exec();
-
 export const initFilterUpdatesUsingMultipleRepository = async <T extends Document, U>(
     filterUpdateConfigs: FilterUpdateConfig[]
 ): Promise<Record<string, FilterItem[]>> => {
