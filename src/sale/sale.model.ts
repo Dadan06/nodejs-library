@@ -1,5 +1,7 @@
 import { Client } from '../client/client.model';
 import { SaleItem } from '../sale-item/sale-item.model';
+import { FilterItem } from '../shared/types/filter-item.interface';
+import { Paginated } from '../shared/types/page.interface';
 import { User } from '../user/user.model';
 
 export enum SaleStatus {
@@ -25,4 +27,13 @@ export interface Sale {
     saleType: SaleType;
     seller: string | User;
     client?: string | Client;
+}
+
+export interface SaleFilterUpdates extends Record<string, FilterItem[]> {
+    clients: FilterItem[];
+    sellers: FilterItem[];
+}
+
+export interface PaginatedSale extends Paginated<Sale> {
+    filter: SaleFilterUpdates | null;
 }
