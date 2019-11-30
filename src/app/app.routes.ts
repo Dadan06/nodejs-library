@@ -7,6 +7,7 @@ import { privilegeRoutes } from '../privilege/privilege.route';
 import { productRoutes } from '../product/product.route';
 import { roleRoutes } from '../role/role.route';
 import { saleItemRoutes } from '../sale-item/sale-item.route';
+import { saleMonitoringRoutes } from '../sale-monitoring/sale-monitoring.route';
 import { saleRoutes } from '../sale/sale.route';
 import { supplierRoutes } from '../supplier/supplier.route';
 import { userRoutes } from '../user/user.route';
@@ -18,6 +19,7 @@ class AppRouter {
         this.init();
     }
 
+    // tslint:disable-next-line: no-big-function
     init() {
         this.router.get('/api-status', (req, res) => res.json({ status: 'API is OK' }));
         this.router.use('/authentication', authenticationRoutes);
@@ -49,6 +51,11 @@ class AppRouter {
             '/payment',
             passport.authenticate('jwt', { session: false }),
             paymentRoutes
+        );
+        this.router.use(
+            '/sale-monitoring',
+            passport.authenticate('jwt', { session: false }),
+            saleMonitoringRoutes
         );
     }
 }
