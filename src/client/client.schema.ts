@@ -7,6 +7,8 @@ const schema = new mongoose.Schema({
     name: { type: String, required: true },
     address: { type: String, required: true },
     contact: { type: String, required: true },
+    email: { type: String, required: true },
+    remark: { type: String },
     type: {
         type: String,
         enum: Object.values(ClientType),

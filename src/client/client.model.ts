@@ -9,5 +9,7 @@ export interface Client {
     name: string;
     address: string;
     contact: string;
+    email: string;
+    remark: string | null;
     type: ClientType;
 }
