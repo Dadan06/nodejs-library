@@ -3,6 +3,11 @@ import { Sale, SaleStatus, SaleType } from './sale.model';
 
 export interface SaleDocument extends Sale, mongoose.Document {}
 
+const consignationSchema = new mongoose.Schema({
+    selled: Number,
+    left: Number
+});
+
 const schema = new mongoose.Schema({
     no: { type: Number, required: true },
     saleDate: { type: Date, required: true },
@@ -20,6 +25,7 @@ const schema = new mongoose.Schema({
         required: false
     },
     seller: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }],
+    consignation: consignationSchema,
     client: { type: mongoose.Schema.Types.ObjectId, ref: 'Client', required: false }
 });
 

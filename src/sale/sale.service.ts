@@ -13,7 +13,7 @@ import { Page, Paginated } from '../shared/types/page.interface';
 import { Sort } from '../shared/types/sort.type';
 import { User } from '../user/user.model';
 import { SaleNotFoundException } from './sale-not-found.exception';
-import { Sale, SaleStatus } from './sale.model';
+import { Sale, SaleStatus, SaleType } from './sale.model';
 import { saleRepository } from './sale.repository';
 
 export interface PaginatedSale extends Paginated<Sale> {}
@@ -119,7 +119,10 @@ class SaleService implements ServiceRead<Sale> {
             discount: item.discount,
             client: item.client,
             saleType: item.saleType,
-            saleStatus: SaleStatus.TERMINATED
+            saleStatus:
+                item.saleType === SaleType.DIRECT_SALE
+                    ? SaleStatus.TERMINATED
+                    : SaleStatus.IN_PROGRESS
         });
         for (const saleItem of item.saleItems as SaleItem[]) {
             if (saleItem.status === SaleItemStatus.ORDERED) {
@@ -133,6 +136,12 @@ class SaleService implements ServiceRead<Sale> {
             paymentDate: new Date(),
             sale: item._id
         });
+    }
+
+    async getConsignations(): Promise<Sale[]> {
+        return saleRepository
+            .find({ saleType: SaleType.CONSIGNATION, status: SaleStatus.IN_PROGRESS })
+            .exec();
     }
 
     calculateSaleAmount(sale: Sale): number {

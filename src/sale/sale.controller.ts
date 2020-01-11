@@ -56,6 +56,10 @@ class SaleController implements ControllerRead {
     saveSale(req: Request, res: Response, next: NextFunction): void {
         wrapToSendBackResponse<Payment>(saleService.saveSale(req.body), res, next);
     }
+
+    getConsignations(req: Request, res: Response, next: NextFunction): void {
+        wrapToSendBackResponse<Sale[]>(saleService.getConsignations(), res, next);
+    }
 }
 
 export const saleController = new SaleController();

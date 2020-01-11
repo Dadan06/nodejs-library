@@ -11,10 +11,12 @@ class SaleRouter {
 
     private init() {
         this.router
+            .route('/consignation')
+            .get(saleController.getConsignations.bind(saleController));
+        this.router
             .route('/')
             .get(saleController.getPaginatedList.bind(saleController))
-            .post(saleController.create.bind(saleController));
-        this.router.route('/save').post(saleController.saveSale.bind(saleController));
+            .post(saleController.saveSale.bind(saleController));
         this.router
             .route('/:saleId/add-product')
             .post(saleController.addProduct.bind(saleController));

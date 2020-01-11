@@ -49,6 +49,7 @@ export const CLIENTS_POPULATION_STAGES = [
 export type SaleFilterFieldMap = Record<string, string>;
 
 export const SALE_FILTER_FIELDS_MAP: SaleFilterFieldMap = {
+    clientTypes: 'client.type',
     clients: 'client.name',
     sellers: 'seller.login',
     types: 'saleType'
@@ -72,6 +73,12 @@ const getOrderFilterUpdateConfigs = (): FilterUpdateConfig[] => [
         repository: saleRepository,
         criteria: {},
         field: 'saleType'
+    },
+    {
+        filter: 'clientTypes',
+        repository: clientRepository,
+        criteria: {},
+        field: 'type'
     }
 ];
 
@@ -101,7 +108,8 @@ class SaleMonitoringService {
         setFilterUpdatesCounts(filterUpdates, sales, SALE_FILTER_FIELDS_MAP, {
             clients: {},
             sellers: {},
-            types: {}
+            types: {},
+            clientTypes: {}
         });
         return {
             filter: filterUpdates as SaleFilterUpdates,

@@ -3,12 +3,11 @@ import { ServiceWrite } from '../common/service/service-write.interface';
 import { ProductNotFoundException } from '../product/product-not-found.exception';
 import { Product } from '../product/product.model';
 import { productRepository } from '../product/product.repository';
-import { HttpStatusCode } from '../shared/constants/http-status-codes.constant';
-import { HttpException } from '../shared/types/http-exception.interface';
+import { IncrementationMode } from '../shared/types/incrementation.interface';
 import { Page, Paginated } from '../shared/types/page.interface';
 import { Sort } from '../shared/types/sort.type';
-import { SaleItemNotFoundException } from './sale-item-not-found.exception';
-import { QuantityChangingData, SaleItem, SaleItemStatus } from './sale-item.model';
+import { SaleItemQtyOutOfRangeException } from './sale-item-qty-out-of-range.exception';
+import { ChangeQtyPayload, SaleItem, SaleItemStatus } from './sale-item.model';
 import { saleItemRepository } from './sale-item.repository';
 
 export interface PaginatedSaleItem extends Paginated<SaleItem> {}
@@ -56,21 +55,23 @@ class SaleItemService implements ServiceRead<SaleItem>, ServiceWrite<SaleItem> {
         return saleItemRepository.findById(id).exec();
     }
 
-    async changeQty(quantityChangingData: QuantityChangingData): Promise<SaleItem> {
-        const saleItem = quantityChangingData.saleItem;
-        const saleItemDb: SaleItem | null = await saleItemRepository.findById(saleItem._id).exec();
-        if (!saleItemDb) {
-            throw new SaleItemNotFoundException(saleItem._id);
+    async changeQty(changeQtyPayload: ChangeQtyPayload): Promise<SaleItem> {
+        const saleItem = changeQtyPayload.saleItem;
+        const { value, mode } = { ...changeQtyPayload.incrementation };
+        let saleItemProduct = saleItem.product as Product;
+        if (saleItemProduct.quantity < value) {
+            throw new SaleItemQtyOutOfRangeException();
         }
-        const saleItemProduct = saleItem.product as Product;
-        saleItemProduct.quantity += quantityChangingData.previousValue;
-        if (saleItemProduct.quantity < saleItem.quantity) {
-            throw new HttpException(HttpStatusCode.GONE, 'Quantité insuffisante');
-        }
-        saleItemProduct.quantity -= saleItem.quantity;
+        saleItemProduct = {
+            ...saleItemProduct,
+            quantity:
+                mode === IncrementationMode.INCREMENT
+                    ? saleItemProduct.quantity - Math.abs(saleItem.quantity - value)
+                    : saleItemProduct.quantity + Math.abs(saleItem.quantity - value)
+        };
         await saleItemRepository.update(saleItem._id, saleItem);
         await productRepository.update(saleItemProduct._id, saleItemProduct);
-        return saleItem;
+        return { ...saleItem, quantity: value, product: saleItemProduct };
     }
 }
 

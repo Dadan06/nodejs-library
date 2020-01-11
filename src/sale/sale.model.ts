@@ -11,8 +11,13 @@ export enum SaleStatus {
 }
 
 export enum SaleType {
-    CASH = 'CASH',
+    DIRECT_SALE = 'DIRECT_SALE',
     CONSIGNATION = 'CONSIGNATION'
+}
+
+export interface Consignation {
+    selled: number;
+    left: number;
 }
 
 export interface Sale {
@@ -26,6 +31,7 @@ export interface Sale {
     saleStatus: SaleStatus;
     saleType: SaleType;
     seller: string | User;
+    consignation: Consignation;
     client?: string | Client;
 }
 

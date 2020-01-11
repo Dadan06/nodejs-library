@@ -1,4 +1,5 @@
 import { Product } from '../product/product.model';
+import { Incrementation } from '../shared/types/incrementation.interface';
 
 export enum SaleItemStatus {
     ORDERED = 'ORDERED',
@@ -7,9 +8,9 @@ export enum SaleItemStatus {
     TERMINATED = 'TERMINATED'
 }
 
-export interface QuantityChangingData {
-    previousValue: number;
+export interface ChangeQtyPayload {
     saleItem: SaleItem;
+    incrementation: Incrementation;
 }
 
 export interface SaleItem {

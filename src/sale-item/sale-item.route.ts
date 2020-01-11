@@ -14,9 +14,7 @@ class SaleItemRouter {
             .route('/')
             .get(saleItemController.getPaginatedList.bind(saleItemController))
             .post(saleItemController.create.bind(saleItemController));
-        this.router
-            .route('/change-qty')
-            .post(saleItemController.changeQty.bind(saleItemController));
+        this.router.route('/change-qty').put(saleItemController.changeQty.bind(saleItemController));
         this.router
             .route('/:saleItemId/delete')
             .put(saleItemController.deleteItem.bind(saleItemController));
