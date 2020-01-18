@@ -66,7 +66,7 @@ class SaleService implements ServiceRead<Sale> {
         }
         const dbProduct: Product | null = await productRepository.findById(product._id).exec();
         if (!dbProduct) {
-            throw new HttpException(HttpStatusCode.NOT_FOUND, `Ce produit n'existe pas`);
+            throw new ProductNotFoundException(product._id);
         }
         this.ensureStockIsEnough(dbProduct, 1);
         if (dbProduct) {
@@ -80,7 +80,7 @@ class SaleService implements ServiceRead<Sale> {
                 quantity: 1,
                 sale: sale._id
             })
-            .then(item => item.populate('product').execPopulate());
+            .then(model => model.populate('product').execPopulate());
         sale.saleItems.push(saleItem._id);
         await saleRepository.update(sale._id, sale);
         return saleItem;
@@ -144,7 +144,7 @@ class SaleService implements ServiceRead<Sale> {
             .exec();
     }
 
-    calculateSaleAmount(sale: Sale): number {
+    private calculateSaleAmount(sale: Sale): number {
         const saleItems: SaleItem[] = (sale.saleItems as SaleItem[]).filter(
             o => o.status === SaleItemStatus.ORDERED
         );
