@@ -35,7 +35,7 @@ export class App {
         this.app.use(bodyParser.json({ limit: '50mb' }));
         this.app.use(bodyParser.urlencoded({ extended: true }));
         this.app.use(morgan('combined', { stream: morganStream }));
-        this.app.set('views', `${appRoot.path}/views`);
+        this.app.set('views', `${appRoot}/public`);
         this.app.set('view engine', 'pug');
     }
 

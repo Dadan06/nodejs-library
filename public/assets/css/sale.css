@@ -1,0 +1,60 @@
+* {
+    font-family: 'Work Sans', sans-serif !important;
+}
+
+header {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header,
+main {
+    padding: 10px 25px;
+}
+
+img {
+    width: 100px;
+    height: 100px;
+}
+
+dt {
+    font-weight: 600;
+}
+
+dd {
+    padding-left: 25px;
+    margin-bottom: 10px;
+}
+
+table {
+    width: 100%;
+}
+
+tr {
+    line-height: 40px;
+}
+
+thead tr {
+    font-weight: 600;
+    border-bottom: 1px solid #000;
+}
+
+tbody tr:nth-child(even) {
+    background: #f2f2f2;
+}
+
+tfoot tr {
+    border-top: 1px solid #000;
+    font-weight: 600;
+}
+
+tfoot td:first-child {
+    text-align: right;
+}
+
+td {
+    padding: 0 20px;
+}
