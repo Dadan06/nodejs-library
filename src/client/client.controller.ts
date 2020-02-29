@@ -8,13 +8,14 @@ import { clientService, PaginatedClient } from './client.service';
 
 class ClientController implements ControllerRead, ControllerWrite {
     getPaginatedList(req: Request, res: Response, next: NextFunction): void {
-        const { page: pageNo, pageSize, ...criteria } = req.query;
+        const { page: pageNo, pageSize, by, direction, ...criteria } = req.query;
         const page: Page = {
             page: Number(pageNo),
             pageSize: Number(pageSize)
         };
+        const order = { by, direction };
         wrapToSendBackResponse<PaginatedClient>(
-            clientService.getPaginatedList(criteria, page),
+            clientService.getPaginatedList(criteria, page, order),
             res,
             next
         );

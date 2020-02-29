@@ -16,8 +16,14 @@ const schema = new mongoose.Schema({
     supplier: { type: mongoose.Schema.Types.ObjectId, ref: 'Supplier' }
 });
 
+const fieldsToPopulate = 'supplier';
+
+schema.pre('findOne', function() {
+    this.populate(fieldsToPopulate);
+});
+
 schema.pre('find', function() {
-    this.populate('supplier');
+    this.populate(fieldsToPopulate);
 });
 
 export const productSchema = mongoose.model<ProductDocument>('Product', schema);

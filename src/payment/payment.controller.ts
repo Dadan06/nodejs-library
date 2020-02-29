@@ -47,6 +47,20 @@ class PaymentController implements ControllerRead, ControllerWrite {
             next
         );
     }
+
+    getConsignations(req: Request, res: Response, next: NextFunction): void {
+        const { page: pageNo, pageSize, by, direction, ...criteria } = req.query;
+        const page: Page = {
+            page: Number(pageNo),
+            pageSize: Number(pageSize)
+        };
+        const order = { by, direction };
+        wrapToSendBackResponse<PaginatedPayment>(
+            paymentService.getConsignations(criteria, page, order),
+            res,
+            next
+        );
+    }
 }
 
 export const paymentController = new PaymentController();

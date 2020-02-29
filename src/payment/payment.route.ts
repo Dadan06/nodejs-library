@@ -11,6 +11,9 @@ class SupplierRouter {
 
     private init() {
         this.router
+            .route('/consignation')
+            .get(paymentController.getConsignations.bind(paymentController));
+        this.router
             .route('/')
             .get(paymentController.getPaginatedList.bind(paymentController))
             .post(paymentController.create.bind(paymentController));

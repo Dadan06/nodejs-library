@@ -8,10 +8,15 @@ const consignationSchema = new mongoose.Schema({
     left: Number
 });
 
+const saleItemSchema = new mongoose.Schema({
+    product: { type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true },
+    quantity: { type: Number, required: true }
+});
+
 const schema = new mongoose.Schema({
     no: { type: Number, required: true },
     saleDate: { type: Date, required: true },
-    saleItems: [{ type: mongoose.Schema.Types.ObjectId, ref: 'SaleItem', required: true }],
+    saleItems: [saleItemSchema],
     amount: { type: Number, required: true },
     discount: { type: Number, required: true },
     saleStatus: {
@@ -25,16 +30,18 @@ const schema = new mongoose.Schema({
         required: false
     },
     seller: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }],
-    consignation: consignationSchema,
-    client: { type: mongoose.Schema.Types.ObjectId, ref: 'Client', required: false }
+    consignations: [consignationSchema],
+    client: { type: mongoose.Schema.Types.ObjectId, ref: 'Client' }
 });
 
+const fieldsToPopulate = 'saleItems.product user client';
+
 schema.pre('find', function() {
-    this.populate('saleItems user client');
+    this.populate(fieldsToPopulate);
 });
 
 schema.pre('findOne', function() {
-    this.populate('saleItems user client');
+    this.populate(fieldsToPopulate);
 });
 
 export const saleSchema = mongoose.model<SaleDocument>('Sale', schema);

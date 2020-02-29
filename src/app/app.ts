@@ -32,9 +32,11 @@ export class App {
     private initMiddlewares() {
         this.app.use(passport.initialize());
         this.app.use(helmet());
-        this.app.use(bodyParser.json());
+        this.app.use(bodyParser.json({ limit: '50mb' }));
         this.app.use(bodyParser.urlencoded({ extended: true }));
         this.app.use(morgan('combined', { stream: morganStream }));
+        this.app.set('views', `${appRoot.path}/views`);
+        this.app.set('view engine', 'pug');
     }
 
     private initErrorHandlerMiddeware() {
@@ -46,7 +48,6 @@ export class App {
     }
 
     private initStatics() {
-        // initilize front-end static files serving:
         this.app.use(express.static(`${appRoot}/public`));
     }
 

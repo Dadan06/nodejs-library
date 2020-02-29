@@ -1,7 +1,6 @@
 import { ServiceRead } from '../common/service/service-read.interface';
 import { ServiceWrite } from '../common/service/service-write.interface';
 import { Page, Paginated } from '../shared/types/page.interface';
-import { Sort } from '../shared/types/sort.type';
 import {
     checkDuplicate,
     getFilteredWithEmbeddedFields
@@ -39,13 +38,15 @@ class ProductService implements ServiceRead<Product>, ServiceWrite<Product> {
         // tslint:disable-next-line:no-any
         criteria: any,
         page: Page,
-        order: Sort<Product> = {}
+        // tslint:disable-next-line: no-any
+        order: any
     ): Promise<PaginatedProduct> {
         const totalItems: number = await productRepository.count(criteria);
         const items: Product[] = await getFilteredWithEmbeddedFields(
             criteria,
             {},
             SEARCH_FIELDS,
+            order,
             productSchema,
             SUPPLIER_POPULATION_STAGE
         );

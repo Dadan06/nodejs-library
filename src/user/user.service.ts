@@ -5,7 +5,6 @@ import { RoleType } from '../role/role.model';
 import { HttpStatusCode } from '../shared/constants/http-status-codes.constant';
 import { HttpException } from '../shared/types/http-exception.interface';
 import { Page, Paginated } from '../shared/types/page.interface';
-import { Sort } from '../shared/types/sort.type';
 import { getFilteredWithEmbeddedFields } from '../shared/utils/filter-paginate.utils';
 import { paginate } from '../shared/utils/paginate';
 import { User } from './user.model';
@@ -42,12 +41,14 @@ class UserService implements ServiceRead<User>, ServiceWrite<User> {
         // tslint:disable-next-line:no-any
         criteria: any,
         page: Page,
-        order: Sort<User> = {}
+        // tslint:disable-next-line: no-any
+        order: any
     ): Promise<PaginatedUser> {
         const users: User[] = await getFilteredWithEmbeddedFields(
             criteria,
             {},
             SEARCH_FIELDS,
+            order,
             userSchema,
             ROLE_POPULATION_STAGE,
             { 'role.roleType': { $ne: RoleType.ROOT } }

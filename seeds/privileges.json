@@ -152,5 +152,19 @@
         },
         "name": "DELETE_CLIENT",
         "category": "CLIENT"
+    },
+    {
+        "_id": {
+            "$oid": "01fe45d49926fbf44d633896"
+        },
+        "name": "VIEW_CONSIGNATIONS",
+        "category": "SALE"
+    },
+    {
+        "_id": {
+            "$oid": "01fe45d49926fbf44d633897"
+        },
+        "name": "EDIT_CONSIGNATION",
+        "category": "SALE"
     }
 ]

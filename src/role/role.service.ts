@@ -1,10 +1,13 @@
 import { ServiceRead } from '../common/service/service-read.interface';
 import { ServiceWrite } from '../common/service/service-write.interface';
 import { Page, Paginated } from '../shared/types/page.interface';
-import { Sort } from '../shared/types/sort.type';
-import { checkDuplicate, getFilteredDocument } from '../shared/utils/filter-paginate.utils';
+import {
+    checkDuplicate,
+    getFilteredWithEmbeddedFields
+} from '../shared/utils/filter-paginate.utils';
 import { Role, RoleType } from './role.model';
 import { roleRepository } from './role.repository';
+import { roleSchema } from './role.schema';
 
 export interface PaginatedRole extends Paginated<Role> {}
 
@@ -18,18 +21,21 @@ class RoleService implements ServiceRead<Role>, ServiceWrite<Role> {
         // tslint:disable-next-line:no-any
         criteria: any,
         page: Page,
-        order: Sort<Role> = {}
+        // tslint:disable-next-line: no-any
+        order: any
     ): Promise<PaginatedRole> {
         const totalItems: number = await roleRepository.count(criteria);
-        const items: Role[] = await getFilteredDocument(
+        const items: Role[] = await getFilteredWithEmbeddedFields(
             criteria,
             FILTER_FIELDS_MAP,
             SEARCH_FIELDS,
-            roleRepository
-        )
-            .where('roleType')
-            .ne(RoleType.ROOT)
-            .exec();
+            order,
+            roleSchema,
+            [],
+            {
+                roleType: { $ne: RoleType.ROOT }
+            }
+        );
         return { items, totalItems };
     }
 

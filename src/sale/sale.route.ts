@@ -11,22 +11,12 @@ class SaleRouter {
 
     private init() {
         this.router.route('/save').post(saleController.saveSale.bind(saleController));
-        this.router
-            .route('/consignation')
-            .get(saleController.getConsignations.bind(saleController));
-        this.router
-            .route('/')
-            .get(saleController.getPaginatedList.bind(saleController))
-            .post(saleController.create.bind(saleController));
-        this.router
-            .route('/:saleId/add-product')
-            .post(saleController.addProduct.bind(saleController));
+        this.router.route('/').get(saleController.getPaginatedList.bind(saleController));
         this.router
             .route('/:saleId')
             .get(saleController.getById.bind(saleController))
             .put(saleController.update.bind(saleController))
             .delete(saleController.delete.bind(saleController));
-        this.router.route('/:saleId/cancel').post(saleController.cancelSale.bind(saleController));
     }
 }
 

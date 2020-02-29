@@ -1,6 +1,6 @@
 // tslint:disable:no-any import-blacklist
 import { get } from 'lodash';
-import { Document, DocumentQuery, Model } from 'mongoose';
+import { Document, Model } from 'mongoose';
 import { BaseRepository } from '../../common/repository/base.repository';
 import { FilterItem } from '../types/filter-item.interface';
 
@@ -80,104 +80,10 @@ export const setFilterUpdatesCounts = <T extends Record<string, any>>(
     });
 };
 
-export const buildMergedCriteria = <T extends Document>(
-    criteria: Record<string, any>,
-    fieldMap: Record<string, string>,
-    searchFields: Array<string>,
-    additionnalCriteria?: Record<string, any>
-): Object => {
-    const filterCriteria = buildFilterCriteria<T>(criteria, fieldMap);
-    const searchCriteria = buildSearchCriteria<T>(criteria.search, searchFields);
-    return additionnalCriteria
-        ? { ...filterCriteria, ...searchCriteria, ...additionnalCriteria }
-        : { ...filterCriteria, ...searchCriteria };
-};
 export interface FilteredItems<T> {
     items: T[];
     filter: Record<string, Record<string, number>>;
 }
-
-export const getFilteredItems = <T extends Document>(param: {
-    schema: Model<T>;
-    populateStages: Object[];
-    criteria: Record<string, any>;
-    fieldMap: Record<string, string>;
-    searchFields: Array<string>;
-}) => {
-    const stages = Object.entries(param.fieldMap).map(field => ({
-        [field[0]]: [
-            {
-                $group: {
-                    _id: `$${field[1]}`,
-                    count: {
-                        $sum: 1
-                    }
-                }
-            }
-        ]
-    }));
-    return param.schema.aggregate([
-        ...param.populateStages,
-        {
-            $facet: {
-                ...stages.reduce((result, item) => {
-                    const key = Object.keys(item)[0];
-                    result[key] = item[key];
-                    return result;
-                }, {}),
-                items: [
-                    {
-                        $match: buildMergedCriteria(
-                            param.criteria,
-                            param.fieldMap,
-                            param.searchFields
-                        )
-                    }
-                ]
-            }
-        }
-    ]);
-};
-
-export const getFiltered = <T extends Document, U>(
-    criteria: Record<string, any>,
-    fieldMap: Record<string, string>,
-    searchFields: Array<string>,
-    repository: BaseRepository<T, U>
-): Promise<T[]> =>
-    repository
-        .find(buildMergedCriteria(criteria, fieldMap, searchFields))
-        .sort({})
-        .exec();
-
-export const getFilteredWithAdditionnalCriteria = <T extends Document, U>(param: {
-    criteria: Record<string, any>;
-    fieldMap: Record<string, string>;
-    searchFields: Array<string>;
-    repository: BaseRepository<T, U>;
-    additionnalCriteria: Record<string, any>;
-}): Promise<T[]> =>
-    param.repository
-        .find(
-            buildMergedCriteria(
-                param.criteria,
-                param.fieldMap,
-                param.searchFields,
-                param.additionnalCriteria
-            )
-        )
-        .sort({})
-        .exec();
-
-export const getFilteredDocument = <T extends Document, U>(
-    criteria: Record<string, any>,
-    fieldMap: Record<string, string>,
-    searchFields: Array<string>,
-    repository: BaseRepository<T, U>,
-    additionnalCriteria?: Record<string, any>
-    // tslint:disable-next-line: parameters-max-number
-): DocumentQuery<T[], T> =>
-    repository.find(buildMergedCriteria(criteria, fieldMap, searchFields, additionnalCriteria));
 
 export const buildPeriodCriteria = (fieldName: string, from: Date, to: Date) => ({
     [fieldName]: {
@@ -185,22 +91,6 @@ export const buildPeriodCriteria = (fieldName: string, from: Date, to: Date) => 
         $lte: new Date(to)
     }
 });
-
-export const buildCriteriasWithPeriod = <T extends Document>(
-    criteria: Record<string, any>,
-    fieldMap: Record<string, string>,
-    searchFields: Array<string>,
-    periodFilterFieldName: string
-): Object => {
-    const { from, to } = criteria.from && criteria.to ? criteria : { from: null, to: null };
-    return {
-        ...buildFilterCriteria<T>(criteria, fieldMap),
-        ...buildSearchCriteria<T>(criteria.search, searchFields),
-        ...(criteria.from && criteria.to
-            ? buildPeriodCriteria(periodFilterFieldName, from, to)
-            : {})
-    };
-};
 
 export const initFilterUpdatesUsingMultipleRepository = async <T extends Document, U>(
     filterUpdateConfigs: FilterUpdateConfig[]
@@ -222,6 +112,7 @@ export const getFilteredWithEmbeddedFields = <T extends Document>(
     criteria: Record<string, any>,
     fieldMap: Record<string, string>,
     searchFields: Array<string>,
+    sort: any,
     model: Model<T>,
     populationStages: object[],
     additionnalCriteria?: Record<string, any>
@@ -237,6 +128,11 @@ export const getFilteredWithEmbeddedFields = <T extends Document>(
                     ...searchCriteria,
                     ...filterCriteria,
                     ...additionnalCriteria
+                }
+            },
+            {
+                $sort: {
+                    [sort.by]: sort.direction === 'asc' ? 1 : -1
                 }
             }
         ])

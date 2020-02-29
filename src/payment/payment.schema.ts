@@ -9,12 +9,19 @@ const schema = new mongoose.Schema({
     sale: { type: mongoose.Schema.Types.ObjectId, ref: 'Sale', required: true }
 });
 
+const fieldsToPopulate = 'sale';
+
 schema.pre('find', function() {
-    this.populate('sale');
+    this.populate(fieldsToPopulate);
 });
 
 schema.pre('findOne', function() {
-    this.populate('sale');
+    this.populate(fieldsToPopulate);
+});
+
+// tslint:disable-next-line: only-arrow-functions
+schema.post('save', async function(model) {
+    await model.populate(fieldsToPopulate).execPopulate();
 });
 
 export const paymentSchema = mongoose.model<PaymentDocument>('Payment', schema);

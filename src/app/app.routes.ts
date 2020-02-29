@@ -3,14 +3,15 @@ import * as passport from 'passport';
 import { authenticationRoutes } from '../authentication/authentication.routes';
 import { clientRoutes } from '../client/client.route';
 import { paymentRoutes } from '../payment/payment.route';
+import { pdfRoutes } from '../pdf/pdf.route';
 import { privilegeRoutes } from '../privilege/privilege.route';
 import { productRoutes } from '../product/product.route';
 import { roleRoutes } from '../role/role.route';
-import { saleItemRoutes } from '../sale-item/sale-item.route';
 import { saleMonitoringRoutes } from '../sale-monitoring/sale-monitoring.route';
 import { saleRoutes } from '../sale/sale.route';
 import { supplierRoutes } from '../supplier/supplier.route';
 import { userRoutes } from '../user/user.route';
+import { viewsRoutes } from '../views/views.route';
 
 class AppRouter {
     router: Router;
@@ -21,7 +22,6 @@ class AppRouter {
 
     // tslint:disable-next-line: no-big-function
     init() {
-        this.router.get('/api-status', (req, res) => res.json({ status: 'API is OK' }));
         this.router.use('/authentication', authenticationRoutes);
         this.router.use('/role', passport.authenticate('jwt', { session: false }), roleRoutes);
         this.router.use(
@@ -41,11 +41,6 @@ class AppRouter {
             supplierRoutes
         );
         this.router.use('/sale', passport.authenticate('jwt', { session: false }), saleRoutes);
-        this.router.use(
-            '/sale-item',
-            passport.authenticate('jwt', { session: false }),
-            saleItemRoutes
-        );
         this.router.use('/client', passport.authenticate('jwt', { session: false }), clientRoutes);
         this.router.use(
             '/payment',
@@ -57,6 +52,8 @@ class AppRouter {
             passport.authenticate('jwt', { session: false }),
             saleMonitoringRoutes
         );
+        this.router.use('/views', viewsRoutes);
+        this.router.use('/pdf', pdfRoutes);
     }
 }
 

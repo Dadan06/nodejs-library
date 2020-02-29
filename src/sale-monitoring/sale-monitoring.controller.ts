@@ -6,13 +6,14 @@ import { saleMonitoringService } from './sale-monitoring.service';
 
 class SaleMonitoringController {
     getSales(req: Request, res: Response, next: NextFunction): void {
-        const { page: pageNo, pageSize, ...criteria } = req.query;
+        const { page: pageNo, pageSize, by, direction, ...criteria } = req.query;
         const page: Page = {
             page: Number(pageNo),
             pageSize: Number(pageSize)
         };
+        const order = { by, direction };
         wrapToSendBackResponse<PaginatedSale>(
-            saleMonitoringService.getSales(criteria, page),
+            saleMonitoringService.getSales(criteria, page, order),
             res,
             next
         );

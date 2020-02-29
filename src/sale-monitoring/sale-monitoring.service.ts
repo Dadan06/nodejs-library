@@ -4,6 +4,7 @@ import { saleRepository } from '../sale/sale.repository';
 import { saleSchema } from '../sale/sale.schema';
 import { Page } from '../shared/types/page.interface';
 import {
+    buildPeriodCriteria,
     FilterUpdateConfig,
     getFilteredWithEmbeddedFields,
     initFilterUpdatesUsingMultipleRepository,
@@ -41,6 +42,23 @@ export const CLIENTS_POPULATION_STAGES = [
     {
         $unwind: {
             path: '$client',
+            preserveNullAndEmptyArrays: true
+        }
+    }
+];
+
+export const SALEITEMS_POPULATION_STAGES = [
+    {
+        $lookup: {
+            from: 'saleitems',
+            localField: 'saleItems',
+            foreignField: '_id',
+            as: 'saleItems'
+        }
+    },
+    {
+        $unwind: {
+            path: '$saleItems',
             preserveNullAndEmptyArrays: true
         }
     }
@@ -86,20 +104,22 @@ export const SEARCH_FIELDS = ['client.name', 'seller.login'];
 
 class SaleMonitoringService {
     // tslint:disable-next-line: no-any
-    async getSales(criteria: any, page: Page): Promise<PaginatedSale> {
-        const populateStages = [...CLIENTS_POPULATION_STAGES, ...SELLER_POPULATION_STAGES];
+    async getSales(criteria: any, page: Page, order: any): Promise<PaginatedSale> {
+        const populateStages = [
+            ...CLIENTS_POPULATION_STAGES,
+            ...SELLER_POPULATION_STAGES,
+            ...SALEITEMS_POPULATION_STAGES
+        ];
         const sales: Sale[] = await getFilteredWithEmbeddedFields(
             criteria,
             SALE_FILTER_FIELDS_MAP,
             SEARCH_FIELDS,
+            order,
             saleSchema,
             populateStages,
             {
                 saleStatus: SaleStatus.TERMINATED,
-                saleDate: {
-                    $gte: new Date(criteria.from),
-                    $lte: new Date(criteria.to)
-                }
+                ...buildPeriodCriteria('saleDate', criteria.from, criteria.to)
             }
         );
         const filterUpdates = await initFilterUpdatesUsingMultipleRepository(

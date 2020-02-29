@@ -1,19 +1,13 @@
 import { ServiceRead } from '../common/service/service-read.interface';
 import { Payment } from '../payment/payment.model';
 import { paymentRepository } from '../payment/payment.repository';
-import { ProductNotFoundException } from '../product/product-not-found.exception';
 import { Product } from '../product/product.model';
 import { productRepository } from '../product/product.repository';
-import { SaleItemNotFoundException } from '../sale-item/sale-item-not-found.exception';
-import { SaleItem, SaleItemStatus } from '../sale-item/sale-item.model';
-import { saleItemRepository } from '../sale-item/sale-item.repository';
 import { HttpStatusCode } from '../shared/constants/http-status-codes.constant';
 import { HttpException } from '../shared/types/http-exception.interface';
 import { Page, Paginated } from '../shared/types/page.interface';
 import { Sort } from '../shared/types/sort.type';
-import { User } from '../user/user.model';
-import { SaleNotFoundException } from './sale-not-found.exception';
-import { Sale, SaleStatus, SaleType } from './sale.model';
+import { Sale, SaleItem, SaleStatus, SaleType } from './sale.model';
 import { saleRepository } from './sale.repository';
 
 export interface PaginatedSale extends Paginated<Sale> {}
@@ -42,129 +36,47 @@ class SaleService implements ServiceRead<Sale> {
         return saleRepository.update(id, item);
     }
 
-    async create(user: User): Promise<Sale> {
-        const no = (await this.getSaleCount()) + 1;
-        return saleRepository.create({
-            no,
-            saleStatus: SaleStatus.IN_PROGRESS,
-            saleItems: [],
-            saleDate: new Date(),
-            seller: user,
-            amount: 0,
-            discount: 0
-        });
-    }
-
-    async getSaleCount() {
-        return saleRepository.count({});
-    }
-
-    async addProduct(saleId: string, product: Product): Promise<SaleItem> {
-        const sale: Sale | null = await saleRepository.findById(saleId).exec();
-        if (!sale) {
-            throw new SaleNotFoundException(saleId);
-        }
-        const dbProduct: Product | null = await productRepository.findById(product._id).exec();
-        if (!dbProduct) {
-            throw new ProductNotFoundException(product._id);
-        }
-        this.ensureStockIsEnough(dbProduct, 1);
-        if (dbProduct) {
-            await productRepository.update(product._id, { quantity: product.quantity - 1 });
-        }
-        const saleItem: SaleItem = await saleItemRepository
-            // tslint:disable-next-line: no-object-literal-type-assertion
-            .create({
-                status: SaleItemStatus.ORDERED,
-                product: dbProduct,
-                quantity: 1,
-                sale: sale._id
-            })
-            .then(model => model.populate('product').execPopulate());
-        sale.saleItems.push(saleItem._id);
-        await saleRepository.update(sale._id, sale);
-        return saleItem;
-    }
-
-    async cancelSale(saleId: string): Promise<Sale | null> {
-        const sale: Sale | null = await saleRepository.update(saleId, {
-            saleStatus: SaleStatus.CANCELED
-        });
-        if (!sale) {
-            throw new SaleNotFoundException(saleId);
-        }
-        await saleItemRepository.cancelForSale(saleId);
-        for (const id of sale.saleItems) {
-            const saleItem: SaleItem | null = await saleItemRepository
-                .findById((id as unknown) as string)
-                .exec();
-            if (!saleItem) {
-                throw new SaleItemNotFoundException((id as unknown) as string);
-            }
-            const dbProduct: Product | null = await productRepository
-                .findById((saleItem.product as Product)._id)
-                .exec();
-            if (!dbProduct) {
-                throw new ProductNotFoundException((saleItem.product as Product)._id);
-            }
-            dbProduct.quantity += saleItem.quantity;
-            await productRepository.update(dbProduct._id, dbProduct);
-        }
-        return sale;
-    }
-
     async saveSale(item: Sale): Promise<Payment> {
-        const amount = this.calculateSaleAmount(item);
-        await saleRepository.update(item._id, {
-            discount: item.discount,
-            client: item.client,
-            saleType: item.saleType,
+        await this.ensureEachProductQuantityEnough(item.saleItems);
+        await this.updateProductQuantity(item.saleItems);
+        const sale: Sale = await saleRepository.create({
+            ...item,
+            _id: undefined,
+            no: (await this.count()) + 1,
             saleStatus:
                 item.saleType === SaleType.DIRECT_SALE
                     ? SaleStatus.TERMINATED
                     : SaleStatus.IN_PROGRESS
         });
-        for (const saleItem of item.saleItems as SaleItem[]) {
-            if (saleItem.status === SaleItemStatus.ORDERED) {
-                await saleItemRepository.update(saleItem._id, {
-                    status: SaleItemStatus.TERMINATED
-                });
-            }
-        }
         return paymentRepository.create({
-            amount,
+            amount: item.amount,
             paymentDate: new Date(),
-            sale: item._id
+            sale
         });
     }
 
-    async getConsignations(): Promise<Sale[]> {
-        return saleRepository
-            .find({ saleType: SaleType.CONSIGNATION, status: SaleStatus.IN_PROGRESS })
-            .exec();
+    private async count(): Promise<number> {
+        return saleRepository.count({});
     }
 
-    private calculateSaleAmount(sale: Sale): number {
-        const saleItems: SaleItem[] = (sale.saleItems as SaleItem[]).filter(
-            o => o.status === SaleItemStatus.ORDERED
-        );
-        return (
-            saleItems.reduce((m, saleItem) => {
-                const product = saleItem.product as Product;
-                return m + product.sellingPrice * saleItem.quantity;
-            }, 0) - sale.discount
-        );
-    }
-
-    private ensureStockIsEnough(product: Product | null, quantity: number) {
-        if (!(product && product.quantity)) {
-            throw new HttpException(
-                HttpStatusCode.GONE,
-                `Ce produit n'est plus disponible en stock`
-            );
+    private async ensureEachProductQuantityEnough(saleItems: SaleItem[]): Promise<void> {
+        for (const saleItem of saleItems) {
+            const product: Product = saleItem.product as Product;
+            if (saleItem.quantity > product.quantity) {
+                throw new HttpException(
+                    HttpStatusCode.BAD_REQUEST,
+                    `Quantite insuffisante pour le produit "${product.name}"`
+                );
+            }
         }
-        if (product && product.quantity < quantity) {
-            throw new HttpException(HttpStatusCode.GONE, `Quantité disponible insuffisante`);
+    }
+
+    private async updateProductQuantity(saleItems: SaleItem[]): Promise<void> {
+        for (const saleItem of saleItems) {
+            const product: Product = saleItem.product as Product;
+            await productRepository.update(product._id, {
+                quantity: product.quantity - saleItem.quantity
+            });
         }
     }
 }

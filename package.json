@@ -1,17 +1,16 @@
 {
-    "name": "express-typescript-api",
+    "name": "nodejs-library",
     "version": "1.0.0",
     "description": "",
     "main": "index.js",
     "repository": {
         "type": "git",
-        "url": "http://git.dreamslab.fr/dreamslab/express-typescript-api.git"
+        "url": ""
     },
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
         "build": "tsc --sourceMap false",
         "start": "nodemon --exec ts-node --transpile-only src/index.ts",
-        "pre-seed": "ts-node ./src/working-hours-type/working-hours-type.faker.ts",
         "seed": "seed",
         "faker": "ts-node ./src/faker.ts",
         "lint": "tslint --project ./tsconfig.json src/**/*.ts",
@@ -21,7 +20,7 @@
     },
     "precommit": "precommit",
     "keywords": [],
-    "author": "AFV",
+    "author": "FIC",
     "license": "ISC",
     "devDependencies": {
         "@types/app-root-path": "^1.2.4",
@@ -40,6 +39,7 @@
         "@types/passport": "^1.0.0",
         "@types/passport-jwt": "^3.0.1",
         "@types/passport-local": "^1.0.33",
+        "@types/puppeteer": "^1.20.2",
         "@types/socket.io": "^2.1.2",
         "@types/winston": "^2.4.4",
         "faker": "^4.1.0",
@@ -68,6 +68,8 @@
         "passport": "^0.4.0",
         "passport-jwt": "^4.0.0",
         "passport-local": "^1.0.0",
+        "pug": "^2.0.4",
+        "puppeteer": "^2.0.0",
         "socket.io": "^2.2.0",
         "winston": "^3.2.1"
     }

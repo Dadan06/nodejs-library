@@ -1,5 +1,5 @@
 import { Client } from '../client/client.model';
-import { SaleItem } from '../sale-item/sale-item.model';
+import { Product } from '../product/product.model';
 import { FilterItem } from '../shared/types/filter-item.interface';
 import { Paginated } from '../shared/types/page.interface';
 import { User } from '../user/user.model';
@@ -17,7 +17,8 @@ export enum SaleType {
 
 export interface Consignation {
     selled: number;
-    left: number;
+    returned: number;
+    date: Date;
 }
 
 export interface Sale {
@@ -25,13 +26,13 @@ export interface Sale {
     _id: any;
     no: number;
     saleDate: Date;
-    saleItems: string[] | SaleItem[];
+    saleItems: SaleItem[];
     amount: number;
     discount: number;
     saleStatus: SaleStatus;
     saleType: SaleType;
     seller: string | User;
-    consignation: Consignation;
+    consignations?: Consignation[];
     client?: string | Client;
 }
 
@@ -42,4 +43,9 @@ export interface SaleFilterUpdates extends Record<string, FilterItem[]> {
 
 export interface PaginatedSale extends Paginated<Sale> {
     filter: SaleFilterUpdates | null;
+}
+
+export interface SaleItem {
+    product: string | Product;
+    quantity: number;
 }

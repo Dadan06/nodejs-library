@@ -2,10 +2,10 @@ import { ServiceRead } from '../common/service/service-read.interface';
 import { ServiceWrite } from '../common/service/service-write.interface';
 import { FilterFieldMap } from '../product/product.service';
 import { Page, Paginated } from '../shared/types/page.interface';
-import { Sort } from '../shared/types/sort.type';
-import { getFilteredDocument } from '../shared/utils/filter-paginate.utils';
+import { getFilteredWithEmbeddedFields } from '../shared/utils/filter-paginate.utils';
 import { Client } from './client.model';
 import { clientRepository } from './client.repository';
+import { clientSchema } from './client.schema';
 
 export interface PaginatedClient extends Paginated<Client> {}
 
@@ -17,15 +17,19 @@ class ClientService implements ServiceRead<Client>, ServiceWrite<Client> {
         // tslint:disable-next-line:no-any
         criteria: any,
         page: Page,
-        order: Sort<Client> = {}
+        // tslint:disable-next-line: no-any
+        order: any
     ): Promise<PaginatedClient> {
         const totalItems: number = await clientRepository.count(criteria);
-        const items: Client[] = await getFilteredDocument(
+        const items: Client[] = await getFilteredWithEmbeddedFields(
             criteria,
             FILTER_FIELDS_MAP,
             SEARCH_FIELDS,
-            clientRepository
-        ).exec();
+            order,
+            clientSchema,
+            [],
+            {}
+        );
         return { items, totalItems };
     }
 

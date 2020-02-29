@@ -8,13 +8,14 @@ import { PaginatedProduct, productService } from './product.service';
 
 class ProductController implements ControllerRead, ControllerWrite {
     getPaginatedList(req: Request, res: Response, next: NextFunction): void {
-        const { page: pageNo, pageSize, ...criteria } = req.query;
+        const { page: pageNo, pageSize, by, direction, ...criteria } = req.query;
         const page: Page = {
             page: Number(pageNo),
             pageSize: Number(pageSize)
         };
+        const order = { by, direction };
         wrapToSendBackResponse<PaginatedProduct>(
-            productService.getPaginatedList(criteria, page),
+            productService.getPaginatedList(criteria, page, order),
             res,
             next
         );

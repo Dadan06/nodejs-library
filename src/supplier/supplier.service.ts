@@ -2,10 +2,11 @@ import { ServiceRead } from '../common/service/service-read.interface';
 import { ServiceWrite } from '../common/service/service-write.interface';
 import { FilterFieldMap } from '../product/product.service';
 import { Page, Paginated } from '../shared/types/page.interface';
-import { Sort } from '../shared/types/sort.type';
-import { getFilteredDocument } from '../shared/utils/filter-paginate.utils';
+import { getFilteredWithEmbeddedFields } from '../shared/utils/filter-paginate.utils';
+import { paginate } from '../shared/utils/paginate';
 import { Supplier } from './supplier.model';
 import { supplierRepository } from './supplier.repository';
+import { supplierSchema } from './supplier.schema';
 
 export interface PaginatedSupplier extends Paginated<Supplier> {}
 
@@ -17,16 +18,19 @@ class SupplierService implements ServiceRead<Supplier>, ServiceWrite<Supplier> {
         // tslint:disable-next-line:no-any
         criteria: any,
         page: Page,
-        order: Sort<Supplier> = {}
+        // tslint:disable-next-line: no-any
+        order: any
     ): Promise<PaginatedSupplier> {
-        const totalItems: number = await supplierRepository.count(criteria);
-        const items: Supplier[] = await getFilteredDocument(
+        const suppliers: Supplier[] = await getFilteredWithEmbeddedFields(
             criteria,
             FILTER_FIELDS_MAP,
             SEARCH_FIELDS,
-            supplierRepository
-        ).exec();
-        return { items, totalItems };
+            order,
+            supplierSchema,
+            [],
+            {}
+        );
+        return { items: paginate(suppliers, page), totalItems: suppliers.length };
     }
 
     async getAll(): Promise<Supplier[]> {
