@@ -50,6 +50,14 @@ const SALE_POPULATION_STAGES = [
                         path: '$client',
                         preserveNullAndEmptyArrays: true
                     }
+                },
+                {
+                    $lookup: {
+                        from: 'saleitems',
+                        localField: 'saleItems',
+                        foreignField: '_id',
+                        as: 'saleItems'
+                    }
                 }
             ]
         }

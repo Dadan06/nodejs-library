@@ -1,13 +1,14 @@
 import { ServiceRead } from '../common/service/service-read.interface';
 import { Payment } from '../payment/payment.model';
 import { paymentRepository } from '../payment/payment.repository';
-import { Product } from '../product/product.model';
 import { productRepository } from '../product/product.repository';
+import { SaleItem } from '../sale-item/sale-item.model';
+import { saleItemRepository } from '../sale-item/sale-item.repository';
 import { HttpStatusCode } from '../shared/constants/http-status-codes.constant';
 import { HttpException } from '../shared/types/http-exception.interface';
 import { Page, Paginated } from '../shared/types/page.interface';
 import { Sort } from '../shared/types/sort.type';
-import { Sale, SaleItem, SaleStatus, SaleType } from './sale.model';
+import { Sale, SaleStatus, SaleType } from './sale.model';
 import { saleRepository } from './sale.repository';
 
 export interface PaginatedSale extends Paginated<Sale> {}
@@ -37,12 +38,14 @@ class SaleService implements ServiceRead<Sale> {
     }
 
     async saveSale(item: Sale): Promise<Payment> {
-        await this.ensureEachProductQuantityEnough(item.saleItems);
-        await this.updateProductQuantity(item.saleItems);
+        await this.ensureEachProductQuantityEnough(item.saleItems as SaleItem[]);
+        await this.updateProductQuantity(item.saleItems as SaleItem[]);
+        const saleItems = await this.createSaleItems(item.saleItems as SaleItem[]);
         const sale: Sale = await saleRepository.create({
             ...item,
             _id: undefined,
             no: (await this.count()) + 1,
+            saleItems,
             saleStatus:
                 item.saleType === SaleType.DIRECT_SALE
                     ? SaleStatus.TERMINATED
@@ -61,21 +64,28 @@ class SaleService implements ServiceRead<Sale> {
 
     private async ensureEachProductQuantityEnough(saleItems: SaleItem[]): Promise<void> {
         for (const saleItem of saleItems) {
-            const product: Product = saleItem.product as Product;
-            if (saleItem.quantity > product.quantity) {
+            if (saleItem.quantity > saleItem.product.quantity) {
                 throw new HttpException(
                     HttpStatusCode.BAD_REQUEST,
-                    `Quantite insuffisante pour le produit "${product.name}"`
+                    `Quantite insuffisante pour le produit "${saleItem.product.name}"`
                 );
             }
         }
     }
 
+    private async createSaleItems(items: SaleItem[]): Promise<SaleItem[]> {
+        const saleItems = [];
+        for (const saleItem of items) {
+            const createdSaleItem = await saleItemRepository.create(saleItem);
+            saleItems.push(createdSaleItem);
+        }
+        return saleItems;
+    }
+
     private async updateProductQuantity(saleItems: SaleItem[]): Promise<void> {
         for (const saleItem of saleItems) {
-            const product: Product = saleItem.product as Product;
-            await productRepository.update(product._id, {
-                quantity: product.quantity - saleItem.quantity
+            await productRepository.update(saleItem.product._id, {
+                quantity: saleItem.product.quantity - saleItem.quantity
             });
         }
     }

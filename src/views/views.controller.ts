@@ -15,7 +15,6 @@ class ViewsController {
     async renderPayment(req: Request, res: Response, next: NextFunction) {
         const payment: Payment = (req as any).payment;
         res.render('list.pug', {
-            now: toLocaleDateString(new Date()),
             paymentDate: toLocaleDateString(payment.paymentDate),
             payment,
             toCurrency

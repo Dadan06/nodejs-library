@@ -7,7 +7,7 @@ import {
 } from '../shared/utils/filter-paginate.utils';
 import { Product } from './product.model';
 import { productRepository } from './product.repository';
-import { productSchema } from './product.schema';
+import { productModel } from './product.schema';
 
 export interface PaginatedProduct extends Paginated<Product> {}
 
@@ -47,7 +47,7 @@ class ProductService implements ServiceRead<Product>, ServiceWrite<Product> {
             {},
             SEARCH_FIELDS,
             order,
-            productSchema,
+            productModel,
             SUPPLIER_POPULATION_STAGE
         );
         return { items, totalItems };

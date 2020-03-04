@@ -3,20 +3,10 @@ import { Sale, SaleStatus, SaleType } from './sale.model';
 
 export interface SaleDocument extends Sale, mongoose.Document {}
 
-const consignationSchema = new mongoose.Schema({
-    selled: Number,
-    left: Number
-});
-
-const saleItemSchema = new mongoose.Schema({
-    product: { type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true },
-    quantity: { type: Number, required: true }
-});
-
 const schema = new mongoose.Schema({
     no: { type: Number, required: true },
     saleDate: { type: Date, required: true },
-    saleItems: [saleItemSchema],
+    saleItems: [{ type: mongoose.Schema.Types.ObjectId, ref: 'SaleItem' }],
     amount: { type: Number, required: true },
     discount: { type: Number, required: true },
     saleStatus: {
@@ -30,11 +20,10 @@ const schema = new mongoose.Schema({
         required: false
     },
     seller: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }],
-    consignations: [consignationSchema],
     client: { type: mongoose.Schema.Types.ObjectId, ref: 'Client' }
 });
 
-const fieldsToPopulate = 'saleItems.product user client';
+const fieldsToPopulate = 'saleItems user client';
 
 schema.pre('find', function() {
     this.populate(fieldsToPopulate);

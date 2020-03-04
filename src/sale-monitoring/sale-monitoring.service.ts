@@ -2,6 +2,7 @@ import { clientRepository } from '../client/client.repository';
 import { PaginatedSale, Sale, SaleFilterUpdates, SaleStatus } from '../sale/sale.model';
 import { saleRepository } from '../sale/sale.repository';
 import { saleSchema } from '../sale/sale.schema';
+import { saleService } from '../sale/sale.service';
 import { Page } from '../shared/types/page.interface';
 import {
     buildPeriodCriteria,
@@ -136,6 +137,10 @@ class SaleMonitoringService {
             items: paginate(sales, page),
             totalItems: sales.length
         };
+    }
+
+    async getById(id: string): Promise<Sale | null> {
+        return saleService.getById(id);
     }
 }
 

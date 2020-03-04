@@ -11,6 +11,9 @@ class SaleMonitoringRouter {
 
     private init() {
         this.router
+            .route('/:saleId')
+            .get(saleMonitoringController.getById.bind(saleMonitoringController));
+        this.router
             .route('/')
             .get(saleMonitoringController.getSales.bind(saleMonitoringController));
     }

@@ -2,32 +2,37 @@ doctype
 html(lang='en')
     head
         meta(charset='utf-8')
-        title Détails
+        title Facture
         link(rel="stylesheet" href="/assets/css/reset.css")
         link(rel="stylesheet" href="/assets/fonts/work-sans.css")
         link(rel="stylesheet" href="/assets/css/sale.css")
     body
         header
-            div
-                dl
-                    dt Date du jour
-                    dd=now
-
-                    dt Date de commande
-                    dd=paymentDate
-
-                    dt N° de commande
-                    dd=payment.sale.no
-
-                    if payment.sale.discount > 0
-                        dt Remise (Ar)
-                        dd=toCurrency(payment.sale.discount)
-
-                    if payment.sale.client
-                        dt Client
-                        dd=payment.sale.client.name
-            div
+            div(class="logo")
                 img(src='/assets/images/logo.png' , alt='Logo')
+                h2 *** FIKAMBANANA MPIARA-MAMAKY NY BAIBOLY ***
+
+            div(class="title")
+                h1 FACTURE
+
+            div(class="summary")
+                div(class="info")
+                    h4 Date du commande
+                    span=paymentDate
+
+                div(class="info")
+                    h4 N° de commande
+                    span=payment.sale.no
+
+                if payment.sale.discount > 0
+                    div(class="info")
+                        h4 Remise (Ar)
+                        span=toCurrency(payment.sale.discount)
+
+                if payment.sale.client
+                    div(class="info")
+                        h4 Client
+                        span=payment.sale.client.name
         main
             table
                 thead
@@ -35,7 +40,7 @@ html(lang='en')
                         td Designation
                         td Qte
                         td PU (Ar)
-                        td Montant (Ar)
+                        td Sous total (Ar)
                 tbody
                     each item in payment.sale.saleItems
                         tr
@@ -43,7 +48,7 @@ html(lang='en')
                             td=item.quantity
                             td=toCurrency(item.product.sellingPrice)
                             td=toCurrency(item.quantity * item.product.sellingPrice)
-                tfoot
-                    tr
-                        td(colspan=3) Montant (Ar)
-                        td=toCurrency(payment.amount)
+        footer
+            div(class="info")
+                h4 Total (Ar)
+                span=toCurrency(payment.amount)

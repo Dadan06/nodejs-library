@@ -19,9 +19,4 @@ schema.pre('findOne', function() {
     this.populate(fieldsToPopulate);
 });
 
-// tslint:disable-next-line: only-arrow-functions
-schema.post('save', async function(model) {
-    await model.populate(fieldsToPopulate).execPopulate();
-});
-
 export const paymentSchema = mongoose.model<PaymentDocument>('Payment', schema);

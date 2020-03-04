@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { PaginatedSale } from '../sale/sale.model';
+import { PaginatedSale, Sale } from '../sale/sale.model';
 import { Page } from '../shared/types/page.interface';
 import { wrapToSendBackResponse } from '../shared/wrap-to-send-back-response';
 import { saleMonitoringService } from './sale-monitoring.service';
@@ -14,6 +14,14 @@ class SaleMonitoringController {
         const order = { by, direction };
         wrapToSendBackResponse<PaginatedSale>(
             saleMonitoringService.getSales(criteria, page, order),
+            res,
+            next
+        );
+    }
+
+    getById(req: Request, res: Response, next: NextFunction): void {
+        wrapToSendBackResponse<Sale | null>(
+            saleMonitoringService.getById(req.params.saleId),
             res,
             next
         );

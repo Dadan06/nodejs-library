@@ -7,6 +7,7 @@ import { pdfRoutes } from '../pdf/pdf.route';
 import { privilegeRoutes } from '../privilege/privilege.route';
 import { productRoutes } from '../product/product.route';
 import { roleRoutes } from '../role/role.route';
+import { saleItemRoutes } from '../sale-item/sale.route';
 import { saleMonitoringRoutes } from '../sale-monitoring/sale-monitoring.route';
 import { saleRoutes } from '../sale/sale.route';
 import { supplierRoutes } from '../supplier/supplier.route';
@@ -41,6 +42,11 @@ class AppRouter {
             supplierRoutes
         );
         this.router.use('/sale', passport.authenticate('jwt', { session: false }), saleRoutes);
+        this.router.use(
+            '/sale-item',
+            passport.authenticate('jwt', { session: false }),
+            saleItemRoutes
+        );
         this.router.use('/client', passport.authenticate('jwt', { session: false }), clientRoutes);
         this.router.use(
             '/payment',
