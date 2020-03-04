@@ -79,6 +79,11 @@ footer {
     padding: 20px 0;
 }
 
+.llb-summary {
+    align-self: flex-end;
+    padding: 0 20px;
+}
+
 .info {
     display: grid;
     grid-template-rows: auto;
