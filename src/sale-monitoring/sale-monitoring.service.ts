@@ -56,12 +56,6 @@ export const SALEITEMS_POPULATION_STAGES = [
             foreignField: '_id',
             as: 'saleItems'
         }
-    },
-    {
-        $unwind: {
-            path: '$saleItems',
-            preserveNullAndEmptyArrays: true
-        }
     }
 ];
 

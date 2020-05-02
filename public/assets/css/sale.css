@@ -2,10 +2,19 @@
     font-family: 'Work Sans', sans-serif !important;
 }
 
+body {
+    padding: 0 5px;
+    margin: 0 5px;
+}
+
 header,
-main {
+main,
+footer {
     width: 100%;
-    padding: 10px;
+}
+
+main {
+    margin: 10px 0;
 }
 
 header {
@@ -35,6 +44,7 @@ tr {
 
 thead tr {
     font-weight: 600;
+    border-top: 1px solid #000;
     border-bottom: 1px solid #000;
 }
 
@@ -56,7 +66,6 @@ td {
 }
 
 footer {
-    width: 100%;
     display: flex;
     flex-direction: row-reverse;
 }
@@ -72,21 +81,20 @@ footer {
     padding: 20px 50px;
     border: 1px solid #000;
     border-radius: 5px;
+    font-weight: 800;
 }
 
 .summary {
-    align-self: flex-start;
-    padding: 20px 0;
+    align-self: flex-end;
 }
 
 .llb-summary {
-    align-self: flex-end;
-    padding: 0 20px;
+    align-self: flex-start;
 }
 
 .info {
     display: grid;
     grid-template-rows: auto;
     grid-template-columns: 200px auto;
-    padding: 5px 10px;
+    padding: 5px 0;
 }

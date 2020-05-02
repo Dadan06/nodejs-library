@@ -1,5 +1,10 @@
 import { Product } from '../product/product.model';
 
+export enum ConsignationStatus {
+    PAID = 'PAID',
+    UNPAID = 'UNPAID'
+}
+
 export interface Consignation {
     selled: number;
     returned: number;
@@ -11,4 +16,5 @@ export interface SaleItem {
     quantity: number;
     amount: number;
     consignations: Consignation[];
+    consignationStatus?: ConsignationStatus;
 }

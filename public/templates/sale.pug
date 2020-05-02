@@ -16,25 +16,6 @@ html(lang='en')
             div(class="title")
                 h1 FACTURE
 
-            div(class="summary")
-                div(class="info")
-                    h4 Date du commande
-                    span=paymentDate
-
-                div(class="info")
-                    h4 N° de commande
-                    span=payment.sale.no
-
-                if payment.sale.discount > 0
-                    div(class="info")
-                        h4 Remise (Ar)
-                        span=toCurrency(payment.sale.discount)
-
-                if payment.sale.client
-                    div(class="info")
-                        h4 Client
-                        span=payment.sale.client.name
-
             div(class="llb-summary")
                 div(class="info")
                     h4 NIF
@@ -55,6 +36,30 @@ html(lang='en')
                     h4 Mail
                     span flambeaullb@gmail.com
 
+            div(class="summary")
+                div(class="info")
+                    h4 Date du commande
+                    span=paymentDate
+
+                div(class="info")
+                    h4 N° de commande
+                    span=payment.sale.no
+
+                div(class="info")
+                    h4 Type de commande
+                    span=saleTypeLabels[payment.sale.saleType]
+
+                if payment.sale.discount > 0
+                    div(class="info")
+                        h4 Remise (Ar)
+                        span=toCurrency(payment.sale.discount)
+
+                if payment.sale.client
+                    div(class="info")
+                        h4 Client
+                        span=payment.sale.client.name
+
+        main
             table
                 thead
                     tr
@@ -69,6 +74,7 @@ html(lang='en')
                             td=item.quantity
                             td=toCurrency(item.product.sellingPrice)
                             td=toCurrency(item.quantity * item.product.sellingPrice)
+
         footer
             div(class="info")
                 h4 Total (Ar)

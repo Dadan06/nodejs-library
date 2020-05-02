@@ -2,7 +2,7 @@ import { ServiceRead } from '../common/service/service-read.interface';
 import { ServiceWrite } from '../common/service/service-write.interface';
 import { Page, Paginated } from '../shared/types/page.interface';
 import { Sort } from '../shared/types/sort.type';
-import { SaleItem } from './sale-item.model';
+import { ConsignationStatus, SaleItem } from './sale-item.model';
 import { saleItemRepository } from './sale-item.repository';
 
 export interface PaginatedSaleItem extends Paginated<SaleItem> {}
@@ -22,7 +22,17 @@ class SaleItemService implements ServiceRead<SaleItem>, ServiceWrite<SaleItem> {
     }
 
     async getById(id: string): Promise<SaleItem | null> {
-        return saleItemRepository.findById(id).exec();
+        let saleItem: SaleItem | null = await saleItemRepository
+            .findById(id)
+            .lean()
+            .exec();
+        if (saleItem) {
+            saleItem = {
+                ...saleItem,
+                consignationStatus: this.updateSaleItemConsignationStatus(saleItem)
+            };
+        }
+        return saleItem;
     }
 
     async create(item: SaleItem): Promise<SaleItem> {
@@ -35,6 +45,11 @@ class SaleItemService implements ServiceRead<SaleItem>, ServiceWrite<SaleItem> {
 
     async update(id: string, item: SaleItem): Promise<SaleItem | null> {
         return saleItemRepository.update(id, item);
+    }
+
+    updateSaleItemConsignationStatus(saleItem: SaleItem): ConsignationStatus {
+        const selled = saleItem.consignations.reduce((acc, current) => acc + +current.selled, 0);
+        return saleItem.quantity === selled ? ConsignationStatus.PAID : ConsignationStatus.UNPAID;
     }
 }
 
