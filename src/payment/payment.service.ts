@@ -11,7 +11,7 @@ import { paymentSchema } from './payment.schema';
 
 export interface PaginatedPayment extends Paginated<Payment> {}
 
-const SEARCH_FIELDS: Array<string> = [];
+const SEARCH_FIELDS: Array<string> = ['sale.client.name', 'sale.seller.login'];
 
 const SALE_POPULATION_STAGES = [
     {
@@ -80,10 +80,6 @@ class PaymentService implements ServiceRead<Payment>, ServiceWrite<Payment> {
         const totalItems: number = await paymentRepository.count(criteria);
         const items: Payment[] = await paymentRepository.getPaginated(criteria, page, order).exec();
         return { items, totalItems };
-    }
-
-    async getAll(): Promise<Payment[]> {
-        return paymentRepository.find({}).exec();
     }
 
     async getById(id: string): Promise<Payment | null> {

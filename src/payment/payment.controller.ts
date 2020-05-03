@@ -20,10 +20,6 @@ class PaymentController implements ControllerRead, ControllerWrite {
         );
     }
 
-    getAll(req: Request, res: Response, next: NextFunction): void {
-        wrapToSendBackResponse<Payment[]>(paymentService.getAll(), res, next);
-    }
-
     getById(req: Request, res: Response, next: NextFunction): void {
         wrapToSendBackResponse<Payment | null>(
             paymentService.getById(req.params.paymentId),

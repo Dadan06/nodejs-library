@@ -15,7 +15,7 @@ export interface PaginatedUser extends Paginated<User> {}
 
 export type FilterFieldMap = Record<string, keyof User>;
 
-const SEARCH_FIELDS: Array<string> = ['firstname', 'lastname', 'login', 'role.name'];
+const SEARCH_FIELDS: Array<string> = ['firstname', 'lastname'];
 
 const DUPLICATE_USER_ERROR = 'Ce login est déja utilisé';
 

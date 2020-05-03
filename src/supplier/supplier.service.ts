@@ -11,7 +11,7 @@ import { supplierSchema } from './supplier.schema';
 export interface PaginatedSupplier extends Paginated<Supplier> {}
 
 const FILTER_FIELDS_MAP: FilterFieldMap = {};
-const SEARCH_FIELDS: Array<string> = ['name', 'address', 'contact', 'nif', 'stat', 'cin'];
+const SEARCH_FIELDS: Array<string> = ['name', 'address'];
 
 class SupplierService implements ServiceRead<Supplier>, ServiceWrite<Supplier> {
     async getPaginatedList(

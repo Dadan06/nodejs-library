@@ -10,7 +10,7 @@ import { clientSchema } from './client.schema';
 export interface PaginatedClient extends Paginated<Client> {}
 
 const FILTER_FIELDS_MAP: FilterFieldMap = {};
-const SEARCH_FIELDS: Array<string> = ['name', 'address', 'contact', 'clientType'];
+const SEARCH_FIELDS: Array<string> = ['name', 'address'];
 
 class ClientService implements ServiceRead<Client>, ServiceWrite<Client> {
     async getPaginatedList(

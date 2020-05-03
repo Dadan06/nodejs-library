@@ -85,12 +85,32 @@ export interface FilteredItems<T> {
     filter: Record<string, Record<string, number>>;
 }
 
-export const buildPeriodCriteria = (fieldName: string, from: Date, to: Date) => ({
-    [fieldName]: {
-        $gte: new Date(from),
-        $lte: new Date(to)
-    }
-});
+export const buildPeriodCriteria = (fieldName: string, fromStr: string, toStr: string) => {
+    const from = fromStr ? new Date(fromStr) : null;
+    const to = toStr ? new Date(toStr) : null;
+    return {
+        $and: [
+            {
+                ...(from
+                    ? {
+                          [fieldName]: {
+                              $gte: from
+                          }
+                      }
+                    : {})
+            },
+            {
+                ...(to
+                    ? {
+                          [fieldName]: {
+                              $lte: to
+                          }
+                      }
+                    : {})
+            }
+        ]
+    };
+};
 
 export const initFilterUpdatesUsingMultipleRepository = async <T extends Document, U>(
     filterUpdateConfigs: FilterUpdateConfig[]
