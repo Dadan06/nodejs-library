@@ -1,4 +1,3 @@
-import { ObjectId } from 'mongodb';
 import * as mongoose from 'mongoose';
 import { Role } from '../role/role.model';
 
@@ -9,6 +8,6 @@ export interface User extends mongoose.Document {
     lastname: string;
     login: string;
     password: string;
-    role: Role | ObjectId;
+    role: Role | string;
     validPassword: (p: string) => Promise<boolean>;
 }

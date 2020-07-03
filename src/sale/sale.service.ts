@@ -49,12 +49,12 @@ class SaleService implements ServiceRead<Sale> {
             saleStatus:
                 item.saleType === SaleType.DIRECT_SALE
                     ? SaleStatus.TERMINATED
-                    : SaleStatus.IN_PROGRESS
+                    : SaleStatus.IN_PROGRESS,
         });
         return paymentRepository.create({
             amount: item.amount,
             paymentDate: new Date(),
-            sale
+            sale,
         });
     }
 
@@ -85,7 +85,7 @@ class SaleService implements ServiceRead<Sale> {
     private async updateProductQuantity(saleItems: SaleItem[]): Promise<void> {
         for (const saleItem of saleItems) {
             await productRepository.update(saleItem.product._id, {
-                quantity: saleItem.product.quantity - saleItem.quantity
+                quantity: saleItem.product.quantity - saleItem.quantity,
             });
         }
     }
